@@ -1,6 +1,6 @@
-# BYTE BACK 방어전 — 3단계 저장점
+# BYTE BACK 방어전 — 4단계 저장점
 
-1~3단계의 Supabase 로그인 화면과 서버 자료 구조를 유지하고, 인증된 메모 CRUD를 완성했습니다.
+1~3단계의 인증·CRUD 구조에 사용자별 소유자 검사와 DB RLS 재현 자료를 추가했습니다.
 
 ## 현재 구조
 
@@ -13,7 +13,11 @@
 - Supabase 테이블 권한 오류를 해결한 뒤 A 계정의 메모 추가·조회·수정·삭제가 배포에서 정상 동작합니다.
 - 공개 `data.json` 및 `public/data.json`을 제거했고 빌드는 `public/data.json`을 생성하지 않습니다.
 - `notes` 테이블은 `owner_id uuid`를 포함하며 기존 인증과 DB 자료는 보존됩니다.
-- 3단계에서는 A와 B 메모의 소유자 간 접근 제한을 추가하지 않았습니다.
+- 4단계에서는 목록 GET과 단일 GET/PUT/DELETE에서 검증된 사용자 소유자를 확인합니다.
+- 상대 메모 GET/PUT/DELETE는 `403 FORBIDDEN`, POST 본문의 `owner_id` 변조는 `400 OWNER_ID_NOT_ALLOWED`입니다.
+- A/B 임시 메모 CRUD와 삭제 후 `404 NOTE_NOT_FOUND`를 Production에서 검증했습니다.
+- `public.notes`의 4개 소유자 정책, 최소 권한 GRANT, 직접 Data API anon 거부를 제작 3에서 검증했습니다.
+- 미검증 항목은 없음을 주장하지 않고, 실행하지 않은 신규 배포 또는 심판 제출은 기록하지 않습니다.
 - **과거 노출:** GitHub 과거 공개 커밋과 기존 Vercel 배포 이력은 이번 변경으로 삭제되지 않습니다. 과거 노출이 해소되었다고 주장하지 않습니다.
 
 ## 실행 / 환경 변수 설정
