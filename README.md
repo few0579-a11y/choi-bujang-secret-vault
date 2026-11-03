@@ -1,14 +1,19 @@
-# BYTE BACK 방어전 — 3단계 제작 3
+# BYTE BACK 방어전 — 3단계 저장점
 
-1~3단계의 Supabase 로그인 화면과 서버 자료 구조를 유지하고, 인증된 메모 CRUD를 추가했습니다.
+1~3단계의 Supabase 로그인 화면과 서버 자료 구조를 유지하고, 인증된 메모 CRUD를 완성했습니다.
 
 ## 현재 구조
 
-- 첫 화면 `/`은 `/api/notes`를 호출해 학습용 Supabase `public.notes`의 가상 메모 4건을 표시합니다.
-- `api/notes.js`는 서버 환경변수 `SUPABASE_URL`, `SUPABASE_SECRET_KEY`로만 연결합니다. 브라우저 응답과 로그에 비밀키를 포함하지 않습니다.
+- 첫 화면 `/`은 로그인한 사용자의 세션 토큰으로 `/api/notes`를 호출합니다. 기존 가상 메모 4건과 사용자가 추가한 메모를 목록으로 표시합니다.
+- `api/notes.js`는 `GET /api/notes`와 `POST /api/notes`를 제공합니다.
+- `api/notes/[id].js`는 `GET`, `PUT`, `DELETE /api/notes/:id`를 제공합니다.
+- 모든 메모 API는 `src/verify-login.mjs`의 `createLoginVerifier()`로 Bearer 토큰을 검증합니다.
+- 새 메모의 `owner_id`에는 클라이언트 입력이 아니라 검증된 Supabase 사용자 ID를 저장합니다.
+- 무토큰 또는 잘못된 토큰 요청은 메모 데이터 없이 `401 {"error":"UNAUTHORIZED"}`를 반환합니다.
+- Supabase 테이블 권한 오류를 해결한 뒤 A 계정의 메모 추가·조회·수정·삭제가 배포에서 정상 동작합니다.
 - 공개 `data.json` 및 `public/data.json`을 제거했고 빌드는 `public/data.json`을 생성하지 않습니다.
-- `notes` 테이블은 `owner_id uuid`를 포함하지만 `auth.users` 외래키가 없고, RLS 활성화와 `anon`/`authenticated` 테이블 권한 회수를 적용합니다.
-- `/api/notes`와 `/api/notes/:id`는 Bearer 토큰이 없거나 유효하지 않으면 `401 UNAUTHORIZED`로 메모를 반환하지 않습니다. 새 메모의 소유자는 검증된 `userId`로 저장됩니다.
+- `notes` 테이블은 `owner_id uuid`를 포함하며 기존 인증과 DB 자료는 보존됩니다.
+- 3단계에서는 A와 B 메모의 소유자 간 접근 제한을 추가하지 않았습니다.
 - **과거 노출:** GitHub 과거 공개 커밋과 기존 Vercel 배포 이력은 이번 변경으로 삭제되지 않습니다. 과거 노출이 해소되었다고 주장하지 않습니다.
 
 ## 실행 / 환경 변수 설정
