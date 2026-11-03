@@ -50,7 +50,13 @@ export default async function handler(request, response) {
       .order('id');
     if (error) throw error;
     return response.status(200).json({ notes: data.map(noteBody) });
-  } catch {
+  } catch (error) {
+    if (request.method === 'POST') {
+      console.error('notes_post_error', {
+        code: error?.code ?? null,
+        message: error?.message ?? null,
+      });
+    }
     return response.status(502).json({ error: 'DATA_UNAVAILABLE' });
   }
 }
