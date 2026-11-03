@@ -30,10 +30,10 @@
 </head>
 <body>
   <main>
-    <div class="eyebrow">BYTE BACK · 2단계 서버 자료 분리</div>
+    <div class="eyebrow">BYTE BACK · 3단계 서버 인증</div>
     <h1>점령된 자료실</h1>
     <p>메모는 공개 정적 파일이 아닌 서버 데이터베이스에서 불러옵니다. 학습용 가상 자료만 사용합니다.</p>
-    <div class="notice">주의: 현재 /api/notes는 로그인 없이 호출 가능한 공개 API입니다. 이번 화면에서는 API 접근 제한을 변경하지 않습니다.</div>
+    <div class="notice">로그인한 A 계정만 인증된 메모 조회를 사용할 수 있습니다.</div>
 
     <section class="auth" aria-labelledby="auth-title">
       <h2 id="auth-title">로그인</h2>
@@ -67,9 +67,13 @@
       authStatus.className = `auth-status ${kind}`.trim();
     }
 
-    async function loadNotes() {
+    async function loadNotes(session) {
       try {
-        const response = await fetch('/api/notes', { cache: 'no-store' });
+        const headers = session?.access_token
+          ? { Authorization: `Bearer ${session.access_token}` }
+          : {};
+        const response = await fetch('/api/notes', { cache: 'no-store', headers });
+        if (response.status === 401) throw new Error('로그인이 필요합니다.');
         if (!response.ok) throw new Error('서버 자료를 읽을 수 없습니다.');
         const data = await response.json();
         if (!Array.isArray(data.notes)) throw new Error('자료 형식이 맞지 않습니다.');
@@ -110,10 +114,12 @@
           loggedIn.classList.remove('hidden');
           userEmail.textContent = `로그인됨: ${currentSession.user.email || currentSession.user.id}`;
           showAuthStatus('로그인 상태입니다.', 'success');
+          loadNotes(currentSession);
         } else {
           loginForm.classList.remove('hidden');
           loggedIn.classList.add('hidden');
           userEmail.textContent = '';
+          list.replaceChildren();
           showAuthStatus('로그아웃 상태입니다.');
         }
       };
@@ -144,7 +150,6 @@
       });
     }
 
-    await loadNotes();
   </script>
 </body>
 </html>
