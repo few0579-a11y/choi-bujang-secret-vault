@@ -22,10 +22,13 @@
     .error { color: #ffb3c0; }
     .success { color: #b4e6b4; }
     .hidden { display: none; }
+    textarea { width: 100%; min-height: 100px; box-sizing: border-box; border: 1px solid #71879b; border-radius: 6px; padding: 11px 12px; background: #101a28; color: #ecf4ff; font-size: 16px; resize: vertical; }
+    .note-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .note-editor { margin-top: 26px; }
     ul { list-style: none; display: grid; gap: 12px; padding: 0; }
     li { border: 1px solid #51667c; border-radius: 8px; padding: 17px 19px; background: #1a2a3d; }
     strong { display: block; font-size: 18px; margin-bottom: 5px; }
-    li span { color: #bfd0e5; }
+    li span { color: #bfd0e5; display: block; }
   </style>
 </head>
 <body>
@@ -49,7 +52,20 @@
       <p id="auth-status" class="auth-status" role="status" aria-live="polite"></p>
     </section>
 
-    <ul id="notes" aria-live="polite"><li>가상 자료를 불러오는 중입니다.</li></ul>
+    <section id="note-editor" class="auth note-editor hidden" aria-labelledby="note-editor-title">
+      <h2 id="note-editor-title">메모 작성</h2>
+      <form id="note-form">
+        <input id="note-id" type="hidden">
+        <label>제목<input id="note-title" type="text" required></label>
+        <label>내용<textarea id="note-body" required></textarea></label>
+        <div class="note-actions">
+          <button id="save-note-button" type="submit">메모 추가</button>
+          <button id="cancel-edit-button" type="button" class="hidden">수정 취소</button>
+        </div>
+      </form>
+    </section>
+
+    <ul id="notes" aria-live="polite"><li>로그인 후 메모를 불러옵니다.</li></ul>
   </main>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -61,6 +77,14 @@
     const userEmail = document.querySelector('#user-email');
     const logoutButton = document.querySelector('#logout-button');
     const authStatus = document.querySelector('#auth-status');
+    const noteEditor = document.querySelector('#note-editor');
+    const noteForm = document.querySelector('#note-form');
+    const noteId = document.querySelector('#note-id');
+    const noteTitle = document.querySelector('#note-title');
+    const noteBody = document.querySelector('#note-body');
+    const saveNoteButton = document.querySelector('#save-note-button');
+    const cancelEditButton = document.querySelector('#cancel-edit-button');
+    let activeSession = null;
 
     function showAuthStatus(message, kind = '') {
       authStatus.textContent = message;
@@ -81,9 +105,20 @@
           const item = document.createElement('li');
           const title = document.createElement('strong');
           const content = document.createElement('span');
+          const actions = document.createElement('div');
+          const editButton = document.createElement('button');
+          const deleteButton = document.createElement('button');
           title.textContent = note.title;
-          content.textContent = note.content;
-          item.append(title, content);
+          content.textContent = note.body ?? note.content;
+          actions.className = 'note-actions';
+          editButton.type = 'button';
+          editButton.textContent = '수정';
+          deleteButton.type = 'button';
+          deleteButton.textContent = '삭제';
+          editButton.addEventListener('click', () => startEdit(note));
+          deleteButton.addEventListener('click', () => deleteNote(note.id));
+          actions.append(editButton, deleteButton);
+          item.append(title, content, actions);
           return item;
         }));
       } catch (error) {
@@ -91,6 +126,40 @@
         item.textContent = error.message;
         list.replaceChildren(item);
       }
+    }
+
+    function startEdit(note) {
+      noteId.value = note.id;
+      noteTitle.value = note.title;
+      noteBody.value = note.body ?? note.content ?? '';
+      saveNoteButton.textContent = '메모 저장';
+      cancelEditButton.classList.remove('hidden');
+      document.querySelector('#note-editor-title').textContent = '메모 수정';
+      noteEditor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      noteTitle.focus();
+    }
+
+    function resetEditor() {
+      noteId.value = '';
+      noteTitle.value = '';
+      noteBody.value = '';
+      saveNoteButton.textContent = '메모 추가';
+      cancelEditButton.classList.add('hidden');
+      document.querySelector('#note-editor-title').textContent = '메모 작성';
+    }
+
+    async function deleteNote(id) {
+      if (!activeSession?.access_token) return;
+      const response = await fetch(`/api/notes/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${activeSession.access_token}` }
+      });
+      if (!response.ok) {
+        showAuthStatus('메모를 삭제할 수 없습니다.', 'error');
+        return;
+      }
+      resetEditor();
+      await loadNotes(activeSession);
     }
 
     let supabase;
@@ -110,14 +179,19 @@
       const { data: { session } } = await supabase.auth.getSession();
       const renderSession = currentSession => {
         if (currentSession?.user) {
+          activeSession = currentSession;
           loginForm.classList.add('hidden');
           loggedIn.classList.remove('hidden');
+          noteEditor.classList.remove('hidden');
           userEmail.textContent = `로그인됨: ${currentSession.user.email || currentSession.user.id}`;
           showAuthStatus('로그인 상태입니다.', 'success');
           loadNotes(currentSession);
         } else {
+          activeSession = null;
           loginForm.classList.remove('hidden');
           loggedIn.classList.add('hidden');
+          noteEditor.classList.add('hidden');
+          resetEditor();
           userEmail.textContent = '';
           list.replaceChildren();
           showAuthStatus('로그아웃 상태입니다.');
@@ -147,6 +221,34 @@
         logoutButton.disabled = false;
         if (error) showAuthStatus(error.message, 'error');
         else showAuthStatus('로그아웃되었습니다.');
+      });
+
+      cancelEditButton.addEventListener('click', resetEditor);
+      noteForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!activeSession?.access_token) return;
+        saveNoteButton.disabled = true;
+        const payload = { title: noteTitle.value.trim(), body: noteBody.value };
+        const editingId = noteId.value;
+        const url = editingId
+          ? `/api/notes/${encodeURIComponent(editingId)}`
+          : '/api/notes';
+        const response = await fetch(url, {
+          method: editingId ? 'PUT' : 'POST',
+          headers: {
+            Authorization: `Bearer ${activeSession.access_token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        saveNoteButton.disabled = false;
+        if (!response.ok) {
+          const result = await response.json().catch(() => ({}));
+          showAuthStatus(result.error || '메모를 저장할 수 없습니다.', 'error');
+          return;
+        }
+        resetEditor();
+        await loadNotes(activeSession);
       });
     }
 

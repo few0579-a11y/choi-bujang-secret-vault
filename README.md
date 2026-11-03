@@ -1,6 +1,6 @@
-# BYTE BACK 방어전 — 3단계 제작 2
+# BYTE BACK 방어전 — 3단계 제작 3
 
-1~2단계의 서버 자료 구조와 Supabase 로그인 화면을 유지하고, 서버 API에 Bearer 토큰 인증을 적용했습니다.
+1~3단계의 Supabase 로그인 화면과 서버 자료 구조를 유지하고, 인증된 메모 CRUD를 추가했습니다.
 
 ## 현재 구조
 
@@ -8,7 +8,7 @@
 - `api/notes.js`는 서버 환경변수 `SUPABASE_URL`, `SUPABASE_SECRET_KEY`로만 연결합니다. 브라우저 응답과 로그에 비밀키를 포함하지 않습니다.
 - 공개 `data.json` 및 `public/data.json`을 제거했고 빌드는 `public/data.json`을 생성하지 않습니다.
 - `notes` 테이블은 `owner_id uuid`를 포함하지만 `auth.users` 외래키가 없고, RLS 활성화와 `anon`/`authenticated` 테이블 권한 회수를 적용합니다.
-- `/api/notes`는 Bearer 토큰이 없거나 유효하지 않으면 `401 UNAUTHORIZED`로 메모를 반환하지 않습니다.
+- `/api/notes`와 `/api/notes/:id`는 Bearer 토큰이 없거나 유효하지 않으면 `401 UNAUTHORIZED`로 메모를 반환하지 않습니다. 새 메모의 소유자는 검증된 `userId`로 저장됩니다.
 - **과거 노출:** GitHub 과거 공개 커밋과 기존 Vercel 배포 이력은 이번 변경으로 삭제되지 않습니다. 과거 노출이 해소되었다고 주장하지 않습니다.
 
 ## 실행 / 환경 변수 설정
