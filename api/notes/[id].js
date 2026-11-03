@@ -35,7 +35,15 @@ export default async function handler(request, response) {
 
     const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
     if (request.method === 'DELETE') {
-      const { data, error } = await db.from('notes').delete().eq('id', id).select('id').maybeSingle();
+      const { data: existing, error: existingError } = await db.from('notes')
+        .select('id,owner_id').eq('id', id).maybeSingle();
+      if (existingError) throw existingError;
+      if (!existing) return response.status(404).json({ error: 'NOTE_NOT_FOUND' });
+      if (existing.owner_id !== identity.userId) {
+        return response.status(403).json({ error: 'FORBIDDEN' });
+      }
+      const { data, error } = await db.from('notes').delete()
+        .eq('id', id).eq('owner_id', identity.userId).select('id').maybeSingle();
       if (error) throw error;
       if (!data) return response.status(404).json({ error: 'NOTE_NOT_FOUND' });
       return response.status(200).json({ id: data.id });
@@ -48,19 +56,40 @@ export default async function handler(request, response) {
       } catch {
         return response.status(400).json({ error: 'INVALID_NOTE' });
       }
+      if (Object.prototype.hasOwnProperty.call(input, 'owner_id')) {
+        return response.status(400).json({ error: 'OWNER_ID_NOT_ALLOWED' });
+      }
       const title = typeof input.title === 'string' ? input.title.trim() : '';
       const body = typeof input.body === 'string' ? input.body : '';
       if (!title || !body) return response.status(400).json({ error: 'INVALID_NOTE' });
-      const { data, error } = await db.from('notes').update({ title, content: body })
-        .eq('id', id).select('id,title,content').maybeSingle();
+
+      const { data: existing, error: existingError } = await db.from('notes')
+        .select('id,owner_id').eq('id', id).maybeSingle();
+      if (existingError) throw existingError;
+      if (!existing) return response.status(404).json({ error: 'NOTE_NOT_FOUND' });
+      if (existing.owner_id !== identity.userId) {
+        return response.status(403).json({ error: 'FORBIDDEN' });
+      }
+
+      const { data, error } = await db.from('notes')
+        .update({ title, content: body, owner_id: identity.userId })
+        .eq('id', id).eq('owner_id', identity.userId)
+        .select('id,title,content,owner_id').maybeSingle();
       if (error) throw error;
       if (!data) return response.status(404).json({ error: 'NOTE_NOT_FOUND' });
+      if (data.owner_id !== identity.userId) {
+        return response.status(403).json({ error: 'FORBIDDEN' });
+      }
       return response.status(200).json({ id: data.id, title: data.title, body: data.content });
     }
 
-    const { data, error } = await db.from('notes').select('id,title,content').eq('id', id).maybeSingle();
+    const { data, error } = await db.from('notes')
+      .select('id,title,content,owner_id').eq('id', id).maybeSingle();
     if (error) throw error;
     if (!data) return response.status(404).json({ error: 'NOTE_NOT_FOUND' });
+    if (data.owner_id !== identity.userId) {
+      return response.status(403).json({ error: 'FORBIDDEN' });
+    }
     return response.status(200).json({ id: data.id, title: data.title, body: data.content });
   } catch {
     return response.status(502).json({ error: 'DATA_UNAVAILABLE' });

@@ -31,6 +31,9 @@ export default async function handler(request, response) {
       } catch {
         return response.status(400).json({ error: 'INVALID_NOTE' });
       }
+      if (Object.prototype.hasOwnProperty.call(input, 'owner_id')) {
+        return response.status(400).json({ error: 'OWNER_ID_NOT_ALLOWED' });
+      }
       const title = typeof input.title === 'string' ? input.title.trim() : '';
       const body = typeof input.body === 'string' ? input.body : '';
       if (!title || !body) return response.status(400).json({ error: 'INVALID_NOTE' });
@@ -45,8 +48,8 @@ export default async function handler(request, response) {
     }
 
     const { data, error } = await db.from('notes')
-      .select('id,title,content')
-      .or(`owner_id.eq.${identity.userId},owner_id.is.null`)
+      .select('id,title,content,owner_id')
+      .eq('owner_id', identity.userId)
       .order('id');
     if (error) throw error;
     return response.status(200).json({ notes: data.map(noteBody) });
