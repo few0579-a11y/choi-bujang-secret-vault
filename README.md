@@ -1,6 +1,22 @@
-# BYTE BACK 방어전 — 4단계 저장점
+# BYTE BACK 방어전 — 1~6단계 구현 기록
 
 1~3단계의 인증·CRUD 구조에 사용자별 소유자 검사와 DB RLS 재현 자료를 추가했습니다.
+
+## 5단계 이력
+
+- 근거 저장점 커밋 `44dc0b54cf434bc14524f78ea47ae05c2628067c` (`44dc0b5 5단계 저장점`)에서 `aleph.config.json`의 단계와 원본 REST 테이블 경로를 기록했습니다.
+- 후속 커밋 `83f60ee160c2257b5e3725694eea24e37cd3d664` (`83f60ee 5단계 점검 수정`)에서 제출 자기 점검의 5단계 실행을 지원했습니다.
+- 해당 이력을 5단계 제출 작업으로 요약합니다. 운영 심판 판정이나 실제 Vercel 재배포 완료는 이 README 기록만으로 증명하지 않습니다.
+
+## 6단계 기기 등록 규칙
+
+- 판정 규칙 ID는 `device_registered`입니다.
+- `deviceRegistered === true`인 가상 정상 요청은 `allow / approved`를 반환합니다.
+- `deviceRegistered`가 `false`이거나 누락된 가상 요청은 `deny / device_not_registered`를 반환합니다.
+- 응답은 `schema`, `requestId`, `decision`, `reasonCode`, `ruleIds` 다섯 필드만 사용하고, `ruleIds`에는 `RULE_IDS`의 값만 사용합니다.
+- 테스트 명령: `npm.cmd run decider:test`
+- 이 명령은 계약의 가상 요청 연습이며 운영 반 엔진 또는 심판 판정 성공을 증명하지 않습니다.
+- 운영 `allowedReasonCodes` 등록부가 이 저장소에서 확인되지 않았으므로 `device_not_registered`의 실제 심판 등록 여부를 검증 완료라고 기록하지 않습니다.
 
 ## 현재 구조
 
