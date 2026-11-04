@@ -1,6 +1,6 @@
-// 4단계 자체 점검: 실제 배포 주소에 요청하고 결과만 기록합니다.
+// 자체 점검: 실제 배포 주소에 요청하고 결과만 기록합니다.
 export async function runAttackChecks(config) {
-  if (config.step !== 4) throw new Error('현재 점검은 4단계 전용입니다.');
+  if (![4, 5].includes(config.step)) throw new Error('현재 점검은 4~5단계 전용입니다.');
   let app;
   try { app = new URL(config.publicAppUrl); } catch { throw new Error('실제 Vercel 배포 URL을 설정하세요.'); }
   if (app.protocol !== 'https:' || app.hostname.endsWith('.example') || app.pathname !== '/') {
@@ -21,11 +21,14 @@ export async function runAttackChecks(config) {
   let directDataStatus = 0;
   if (configResponse.ok) {
     try {
-      const config = await configResponse.json();
-      if (typeof config.url === 'string' && typeof config.publishableKey === 'string') {
-        const directResponse = await fetch(`${config.url}/rest/v1/notes?select=id,title,content,owner_id`, {
+      const authConfig = await configResponse.json();
+      if (typeof authConfig.url === 'string' && typeof authConfig.publishableKey === 'string') {
+        const directUrl = config.step >= 5 && typeof config.originalApiUrl === 'string'
+          ? config.originalApiUrl
+          : `${authConfig.url}/rest/v1/notes`;
+        const directResponse = await fetch(directUrl, {
           method: 'GET', redirect: 'error', signal: AbortSignal.timeout(10000),
-          headers: { apikey: config.publishableKey, Authorization: `Bearer ${config.publishableKey}` },
+          headers: { apikey: authConfig.publishableKey },
         });
         directDataStatus = directResponse.status;
       }
