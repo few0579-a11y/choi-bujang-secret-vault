@@ -1,4 +1,4 @@
-# BYTE BACK 방어전 — 1~6단계 구현 기록
+# BYTE BACK 방어전 — 1~7단계 구현 기록
 
 1~3단계의 인증·CRUD 구조에 사용자별 소유자 검사와 DB RLS 재현 자료를 추가했습니다.
 
@@ -17,6 +17,16 @@
 - 테스트 명령: `npm.cmd run decider:test`
 - 이 명령은 계약의 가상 요청 연습이며 운영 반 엔진 또는 심판 판정 성공을 증명하지 않습니다.
 - 운영 `allowedReasonCodes` 등록부가 이 저장소에서 확인되지 않았으므로 `device_not_registered`의 실제 심판 등록 여부를 검증 완료라고 기록하지 않습니다.
+
+## 7단계 평소와 다른 접속 추가 확인 규칙
+
+- 판정 규칙 ID는 `device_registered`, `step_up_required` 두 개입니다.
+- 접속 신호(`signals`)는 엔진이 넘긴 `source: "judge_fixture"`(심판 가상 사건)일 때만 근거로 씁니다. 브라우저·클라이언트 헤더 등 다른 출처, 누락·형식 오류, `unknown` 값은 근거 없음으로 두고 정상값으로 채우지 않습니다.
+- 새벽 시각(0~5시), 처음 보는 네트워크, 지역 변경, 최근 5분 내 10건 이상 요청 중 두 가지 이상이 겹치면 `step_up / step_up_required`를 반환합니다. 지역 하나만으로는 거부하지 않습니다.
+- 엔진이 `stepUp.verified === true`, `authAgeSeconds` 300초 이내를 넘기면 같은 사건도 `allow`입니다. 기존 기기 규칙은 유지합니다.
+- 테스트 명령: `npm.cmd run decider:test`, `npm.cmd run fixture:7` (가상 요청 연습이며 심판 판정이 아닙니다).
+- 제공 엔진이 같은 로그인으로 다시 로그인한 시각을 검증해 주는 계약이 이 저장소에 없으므로, 실제 자료 차단·새 로그인 뒤 재판정은 **미실행**입니다.
+- 운영 `allowedReasonCodes`에 `step_up_required`가 등록됐는지는 이 저장소에서 확인하지 못했습니다.
 
 ## 현재 구조
 
