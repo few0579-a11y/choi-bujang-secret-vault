@@ -1,10 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import { verifyNotesRequest } from '../src/notes-auth.mjs';
+import { denyAccess, noteResourceId } from '../src/zones.mjs';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
 
 function noteBody(row) {
-  return { id: row.id, title: row.title, body: row.content };
+  return { id: row.id, resourceId: noteResourceId(row.id), title: row.title, body: row.content };
 }
 
 export default async function handler(request, response) {
@@ -34,6 +35,9 @@ export default async function handler(request, response) {
       if (Object.prototype.hasOwnProperty.call(input, 'owner_id')) {
         return response.status(400).json({ error: 'OWNER_ID_NOT_ALLOWED' });
       }
+      if (Object.prototype.hasOwnProperty.call(input, 'role')) {
+        return denyAccess(response, { status: 400, error: 'ROLE_NOT_ALLOWED', reason: 'client_claim_ignored', route: 'POST /api/notes' });
+      }
       const title = typeof input.title === 'string' ? input.title.trim() : '';
       const body = typeof input.body === 'string' ? input.body : '';
       if (!title || !body) return response.status(400).json({ error: 'INVALID_NOTE' });
@@ -47,12 +51,13 @@ export default async function handler(request, response) {
       return response.status(201).json({ id: data.id });
     }
 
+    // 8단계: 목록은 화면용 '내 메모'만 돌려줍니다. 쿼리로 다른 구역·전체 목록을 고를 수 없습니다.
     const { data, error } = await db.from('notes')
       .select('id,title,content,owner_id')
       .eq('owner_id', identity.userId)
       .order('id');
     if (error) throw error;
-    return response.status(200).json({ notes: data.map(noteBody) });
+    return response.status(200).json({ notes: data.filter(row => row.owner_id === identity.userId).map(noteBody) });
   } catch (error) {
     if (request.method === 'POST') {
       console.error('notes_post_error', {

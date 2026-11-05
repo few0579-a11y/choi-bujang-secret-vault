@@ -1,4 +1,4 @@
-# BYTE BACK 방어전 — 1~7단계 구현 기록
+# BYTE BACK 방어전 — 1~8단계 구현 기록
 
 1~3단계의 인증·CRUD 구조에 사용자별 소유자 검사와 DB RLS 재현 자료를 추가했습니다.
 
@@ -27,6 +27,26 @@
 - 테스트 명령: `npm.cmd run decider:test`, `npm.cmd run fixture:7` (가상 요청 연습이며 심판 판정이 아닙니다).
 - 제공 엔진이 같은 로그인으로 다시 로그인한 시각을 검증해 주는 계약이 이 저장소에 없으므로, 실제 자료 차단·새 로그인 뒤 재판정은 **미실행**입니다.
 - 운영 `allowedReasonCodes`에 `step_up_required`가 등록됐는지는 이 저장소에서 확인하지 못했습니다.
+
+## 8단계 자료 구역 분리
+
+- **자원 ID (제작 1):** 메모는 `note:<id>`, 반 공지는 `notice:<id>`로 응답에 `resourceId`를 붙입니다. 기존 메모 자료·주소는 그대로이며 화면 메뉴는 바꾸지 않았습니다.
+- **판정기 구역 규칙 (제작 2, 규칙 ID `resource_zone`):** 엔진이 넘긴 `service`·`method`·`path`·`route`만 봅니다.
+  - 메모(`notes`): `GET/PUT/DELETE /notes/:id`만 허용. ID 없는 목록(`GET /notes`)과 생성(`POST /notes`)은 거부.
+  - 반 공지(`notices`): `GET /notices`, `GET /notices/:id`만 허용. 쓰기는 누구에게나 거부.
+  - 강사 자료와 알 수 없는 서비스·경로, `:id` 아래 기능 경로(예: `/export`), `path`와 `route` 모양 불일치는 거부(`zone_not_allowed`).
+  - 메모 주인 비교와 강사 여부는 판정기가 아니라 API에서 합니다. 쿼리로 기능을 고르지 않고, ID 형식은 좁히지 않습니다.
+  - `allowedRoutes`에는 판정기가 허용하는 경로만 적었습니다.
+- **API 재확인 (제작 3):**
+  - `api/notes/[id].js`는 저장된 `owner_id`와 검증된 사용자를 비교해 `403 FORBIDDEN / reason: not_owner`를 반환합니다.
+  - `api/notes.js`의 목록은 화면용으로 본인 메모만 반환합니다. 판정기 허용 경로에는 넣지 않았습니다.
+  - `api/notices.js`, `api/notices/[id].js`는 로그인 사용자 읽기 전용이며, 쓰기 요청은 `403 / notice_read_only`입니다.
+  - 강사의 공지 수정은 `PUT /api/admin/notices/:id`에서만 합니다. DB `public.class_roles`에 저장된 `instructor` 역할만 허용(`403 / not_instructor`)합니다. 본문의 `role`·`owner_id`·`updated_by`는 `400 ROLE_NOT_ALLOWED`로 거부합니다.
+  - 거부 시 `access_denied {route, reason}`만 서버 로그에 남깁니다(사용자 ID·토큰·본문 제외).
+- **DB:** `supabase_stage8_zones.sql`이 `notices`·`class_roles`를 만듭니다(RLS 켬, anon·authenticated 직접 권한 없음, 서버 secret key만 접근).
+- **패키징 기준표:** 새 서버 함수 3개를 `package/baseline-functions.json`의 `allowedNew`에 적었습니다. `test/package-starter.test.mjs`는 목록이 코드에 고정돼 있어 계속 실패합니다(시작 틀 시험 원문은 수정하지 않음).
+- 테스트 명령: `npm.cmd run decider:test`, `npm.cmd run fixture:7`, `npm.cmd run fixture:8` (모두 가상 요청 연습이며 심판 판정이 아닙니다).
+- **미검증:** 배포에서 A/B 계정으로 다른 사람 메모 조회·수정, 강사 계정의 공지 수정 성공은 실행하지 않았습니다. 운영 `allowedReasonCodes`에 `zone_not_allowed`가 등록됐는지, 엔진이 쓰는 `service` 이름(`notes`·`notices`)이 실제와 같은지는 이 저장소에서 확인하지 못했습니다.
 
 ## 현재 구조
 

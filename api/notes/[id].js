@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { verifyNotesRequest } from '../../src/notes-auth.mjs';
+import { denyAccess, noteResourceId } from '../../src/zones.mjs';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
 
@@ -40,7 +41,7 @@ export default async function handler(request, response) {
       if (existingError) throw existingError;
       if (!existing) return response.status(404).json({ error: 'NOTE_NOT_FOUND' });
       if (existing.owner_id !== identity.userId) {
-        return response.status(403).json({ error: 'FORBIDDEN' });
+        return denyAccess(response, { status: 403, error: 'FORBIDDEN', reason: 'not_owner', route: `${request.method} /api/notes/:id` });
       }
       const { data, error } = await db.from('notes').delete()
         .eq('id', id).eq('owner_id', identity.userId).select('id').maybeSingle();
@@ -59,6 +60,9 @@ export default async function handler(request, response) {
       if (Object.prototype.hasOwnProperty.call(input, 'owner_id')) {
         return response.status(400).json({ error: 'OWNER_ID_NOT_ALLOWED' });
       }
+      if (Object.prototype.hasOwnProperty.call(input, 'role')) {
+        return denyAccess(response, { status: 400, error: 'ROLE_NOT_ALLOWED', reason: 'client_claim_ignored', route: 'PUT /api/notes/:id' });
+      }
       const title = typeof input.title === 'string' ? input.title.trim() : '';
       const body = typeof input.body === 'string' ? input.body : '';
       if (!title || !body) return response.status(400).json({ error: 'INVALID_NOTE' });
@@ -68,7 +72,7 @@ export default async function handler(request, response) {
       if (existingError) throw existingError;
       if (!existing) return response.status(404).json({ error: 'NOTE_NOT_FOUND' });
       if (existing.owner_id !== identity.userId) {
-        return response.status(403).json({ error: 'FORBIDDEN' });
+        return denyAccess(response, { status: 403, error: 'FORBIDDEN', reason: 'not_owner', route: `${request.method} /api/notes/:id` });
       }
 
       const { data, error } = await db.from('notes')
@@ -78,9 +82,9 @@ export default async function handler(request, response) {
       if (error) throw error;
       if (!data) return response.status(404).json({ error: 'NOTE_NOT_FOUND' });
       if (data.owner_id !== identity.userId) {
-        return response.status(403).json({ error: 'FORBIDDEN' });
+        return denyAccess(response, { status: 403, error: 'FORBIDDEN', reason: 'not_owner', route: `${request.method} /api/notes/:id` });
       }
-      return response.status(200).json({ id: data.id, title: data.title, body: data.content });
+      return response.status(200).json({ id: data.id, resourceId: noteResourceId(data.id), title: data.title, body: data.content });
     }
 
     const { data, error } = await db.from('notes')
@@ -88,9 +92,9 @@ export default async function handler(request, response) {
     if (error) throw error;
     if (!data) return response.status(404).json({ error: 'NOTE_NOT_FOUND' });
     if (data.owner_id !== identity.userId) {
-      return response.status(403).json({ error: 'FORBIDDEN' });
+      return denyAccess(response, { status: 403, error: 'FORBIDDEN', reason: 'not_owner', route: `${request.method} /api/notes/:id` });
     }
-    return response.status(200).json({ id: data.id, title: data.title, body: data.content });
+    return response.status(200).json({ id: data.id, resourceId: noteResourceId(data.id), title: data.title, body: data.content });
   } catch {
     return response.status(502).json({ error: 'DATA_UNAVAILABLE' });
   }
