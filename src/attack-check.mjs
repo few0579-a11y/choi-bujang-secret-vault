@@ -1,8 +1,10 @@
 // 자체 점검: 실제 배포 주소에 요청하고 결과만 기록합니다. 심판 판정이 아닙니다.
 // 12단계 규칙(심판 격리 환경):
 // - 공개 HTTPS 주소에 GET만 보냅니다. 쓰기 요청(POST·PUT)이 필요한 점검은 보내지 않고 observed = 'not_run'.
-// - 요청을 보낸 점검은 한 점검에 요청 하나, observed = 'GET <주소> → HTTP <받은 상태> · <서버 요청 ID(x-vercel-id)> · x-request-id <attackId>'.
+// - 요청을 보낸 점검은 한 점검에 요청 하나, 요청마다 alephEvidence { caseId: attackId, requestKey }를 붙이고 observed = 'HTTP <받은 상태>'.
 // - 점검 목록 밖의 요청은 보내지 않습니다(보낸 요청과 기록이 1:1로 맞아야 함). 순서도 기록 순서와 같습니다.
+import { randomUUID } from 'node:crypto';
+
 const NOT_RUN = 'not_run';
 
 export async function runAttackChecks(config) {
@@ -13,22 +15,20 @@ export async function runAttackChecks(config) {
     throw new Error('실제 Vercel 배포 URL을 설정하세요.');
   }
   const results = [];
-  // 심판이 결과와 실제 요청을 연결할 수 있게, 요청 식별자로 점검 이름(attackId)을 그대로 씁니다.
-  // 같은 attackId를 요청 헤더(x-request-id, x-aleph-attack-id)로 보내고 기록에도 적습니다. 응답 내용·토큰은 기록하지 않습니다.
+  // 심판 실행기(runner)가 요청을 점검과 연결하는 방법: fetch 옵션 alephEvidence { caseId: attackId, requestKey: 요청 ID }.
+  // (공개 참고 저장소 ChoiTimo/byteback-sample-pass의 src/attack-check.mjs와 같은 방식. 이 값은 헤더·URL에 넣지 않습니다.)
+  // observed에는 runner가 확인할 수 있는 값만 씁니다: 'HTTP <상태>'(+ JSON 배열이면 '; jsonArrayLength=N').
   const sent = async (attackId, expected, url, headers = {}) => {
-    const target = new URL(url);
-    // 주소는 URL 객체가 아니라 문자열로 넘깁니다(요청 기록 도구가 주소를 그대로 읽을 수 있게).
-    const response = await fetch(target.href, {
-      method: 'GET', headers: { ...headers, 'x-request-id': attackId, 'x-aleph-attack-id': attackId },
-      redirect: 'error', signal: AbortSignal.timeout(10000),
+    const requestKey = randomUUID();
+    const response = await fetch(url, {
+      method: 'GET', headers: { accept: 'application/json', ...headers }, redirect: 'error', signal: AbortSignal.timeout(10000),
+      alephEvidence: { caseId: attackId, requestKey },
     });
-    // 서버 관측 식별자: 서버(Vercel)가 응답에 붙인 요청 ID(x-vercel-id). 원본 DB(Supabase)는 sb-request-id.
-    // 받은 값만 그대로 적고, 없으면 지어내지 않고 '없음'으로 둡니다.
-    const serverId = response.headers.get('x-vercel-id')
-      ? `x-vercel-id ${response.headers.get('x-vercel-id')}`
-      : response.headers.get('sb-request-id') ? `sb-request-id ${response.headers.get('sb-request-id')}` : '서버 요청 ID 없음';
-    results.push({ attackId, expected, observed: `GET ${target.origin}${target.pathname} → HTTP ${response.status} · ${serverId} · x-request-id ${attackId}` });
-    return response;
+    let json = null;
+    const text = await response.text().catch(() => '');
+    try { json = JSON.parse(text); } catch { /* JSON이 아닌 응답 */ }
+    results.push({ attackId, expected, observed: `HTTP ${response.status}${Array.isArray(json) ? `; jsonArrayLength=${json.length}` : ''}` });
+    return json; // 응답 본문은 기록하지 않고, 다음 점검에 필요한 공개 값(공개 키)만 꺼낼 때 씁니다.
   };
   const notRun = (attackId, expected) => results.push({ attackId, expected, observed: NOT_RUN });
   const at = path => new URL(path, app);
@@ -39,9 +39,8 @@ export async function runAttackChecks(config) {
   await sent('anonymous_api_access', '무토큰 메모 목록 GET 401', at('/api/notes'));
   notRun('anonymous_api_post', '무토큰 메모 생성 POST 401 (쓰기 요청이라 보내지 않음)');
   // 5단계: 원본 Data API를 공개 키(anon)로 직접 조회. 공개 키는 화면용 공개 설정에서 받습니다.
-  const configResponse = await sent('public_auth_config', '화면용 공개 로그인 설정 GET 200', at('/api/auth-config'));
-  let publishableKey = '';
-  try { publishableKey = (await configResponse.json())?.publishableKey ?? ''; } catch {}
+  const authConfig = await sent('public_auth_config', '화면용 공개 로그인 설정 GET 200', at('/api/auth-config'));
+  const publishableKey = typeof authConfig?.publishableKey === 'string' ? authConfig.publishableKey : '';
   const directUrl = config.step >= 5 && typeof config.originalApiUrl === 'string' ? config.originalApiUrl : '';
   if (directUrl && publishableKey) {
     await sent('direct_data_api_anon', '원본 Data API anon GET 401 또는 403', directUrl, { apikey: publishableKey });

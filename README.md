@@ -159,6 +159,7 @@
 - 세 번째 제출도 S12_SCREEN_MISMATCH(53점, "9개 점검의 실제 요청을 확인하지 못함") → 기록에 보낸 요청의 방법·전체 주소와 요청 ID를 함께 남기도록 바꿈: `GET <주소> → HTTP <상태> · x-request-id <UUID>`(UUID는 `node:crypto` randomUUID로 만들어 같은 값을 요청 헤더로 보냄).
 - 네 번째 제출도 53점("attackId가 결과에만 있고 요청은 별도 요청 ID로 기록돼 연결 못 함") → 요청 식별자를 무작위 UUID 대신 **attackId 자체**로 바꿈. 요청 헤더 `x-request-id`·`x-aleph-attack-id` = attackId, 기록도 `· x-request-id <attackId>`.
 - 이후 제출(534ca11·b0d8b91)도 53점, 메모가 "서버 관측 식별자와 연결"을 요구 → 기록에 서버가 응답에 붙인 요청 ID(`x-vercel-id`, Supabase는 `sb-request-id`)를 받은 그대로 추가. 없으면 '서버 요청 ID 없음'.
+- **원인 확인(2026-11-06):** 심판 실행기는 요청을 헤더나 서버 ID가 아니라 `fetch` 옵션 `alephEvidence: { caseId: <attackId>, requestKey: <요청 ID> }`로 점검과 연결합니다. 수업 카드·시작 틀에는 없고, 운영자 공개 참고 저장소 `ChoiTimo/byteback-sample-pass`의 `src/attack-check.mjs`에서 확인했습니다. 그래서 요청마다 `alephEvidence`를 붙이고(헤더·URL에는 넣지 않음), `observed`는 실행기가 확인할 수 있는 `HTTP <상태>`(JSON 배열이면 `; jsonArrayLength=N`)만 씁니다. 앞서 넣은 `x-request-id`·`x-aleph-attack-id` 헤더와 서버 ID 기록은 뺐습니다.
 - 작전실 화면의 실제 배포 확인과 `ops:regress` 실측은 이 커밋을 push·배포한 뒤 학생이 실행합니다. 실행 전에는 `ops/` 표가 없거나 이전 결과입니다.
 - 회수된 신원·미등록 기기의 재전송 차단은 엔진(기기 서명·신원 확인)과 판정기 `device_registered`·`request_integrity` 규칙에 의존하며, 판정기 계약에 "회수됨" 값이 없어 판정기에 새 규칙을 더하지 않았습니다.
 
