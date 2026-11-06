@@ -1,7 +1,7 @@
 // ALEPH SDP 엔진이 확인한 요청만 받는 학생 판정기입니다.
 // 요청 본문의 userId, role, 기기 키, 토큰을 별도로 믿거나 저장하지 마세요.
 // docs/DECIDER_REQUEST.md 계약의 이름(deviceRegistered, stepUp, recentEvents, signals 등)만 읽습니다.
-export const RULE_IDS = Object.freeze(['device_registered', 'step_up_required', 'resource_zone']);
+export const RULE_IDS = Object.freeze(['device_registered', 'step_up_required', 'resource_zone', 'request_integrity']);
 
 // 7단계 제작 1: 엔진이 검증해 넘긴 가상 접속 정보만 신호로 인정합니다.
 // 'judge_fixture'는 심판이 보낸 가상 사건이며 실제 위치 증거가 아닙니다.
@@ -87,6 +87,30 @@ function zoneAllows(request) {
     && rule.path.test(path));
 }
 
+// 11단계: 엔진이 기기 서명을 확인한 뒤 넘긴 요청의 "모양"을 다시 대조합니다.
+// 서명 뒤 경로·쿼리가 바뀌었거나 계약에 없는 이름이 끼어 있으면 허용하지 않습니다.
+// 서명 검증 자체와 본문 대조는 엔진(릴레이)의 일이며, 판정기는 계약 18개 이름만 읽습니다.
+const CONTRACT_KEYS = new Set(['schema', 'requestId', 'classId', 'projectId', 'subjectId', 'deviceId',
+  'service', 'method', 'path', 'route', 'queryLength', 'querySha256', 'at', 'policyRevision',
+  'deviceRegistered', 'stepUp', 'recentEvents', 'signals']);
+const EMPTY_SHA256 = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+const DEVICE_ID = /^[0-9a-f]{16}$/u;
+const SHA256_HEX = /^[0-9a-f]{64}$/u;
+const UNSAFE_PATH = /%2f|%5c|\\|\/\.{1,2}(?:\/|$)|\/\//iu;
+
+function requestIntact(request) {
+  if (!request || typeof request !== 'object' || Array.isArray(request)) return false;
+  if (Object.keys(request).some(key => !CONTRACT_KEYS.has(key))) return false;
+  if (request.schema !== 'aleph.decision.v1') return false;
+  if (typeof request.deviceId !== 'string' || !DEVICE_ID.test(request.deviceId)) return false;
+  if (typeof request.path !== 'string' || !request.path.startsWith('/') || UNSAFE_PATH.test(request.path)) return false;
+  if (!Number.isInteger(request.queryLength) || request.queryLength < 0) return false;
+  if (typeof request.querySha256 !== 'string' || !SHA256_HEX.test(request.querySha256)) return false;
+  // 쿼리가 비었다고 하면서 지문이 빈 문자열의 지문이 아니면, 서명 뒤 쿼리가 바뀐 것으로 봅니다.
+  if (request.queryLength === 0 && request.querySha256 !== EMPTY_SHA256) return false;
+  return true;
+}
+
 const respond = (request, decision, reasonCode, ruleIds) => ({
   schema: 'aleph.decision.v1',
   requestId: request.requestId,
@@ -96,6 +120,10 @@ const respond = (request, decision, reasonCode, ruleIds) => ({
 });
 
 export async function decide(request) {
+  if (!requestIntact(request)) {
+    return respond(request ?? {}, 'deny', 'request_integrity_failed', [RULE_IDS[3]]);
+  }
+
   if (request.deviceRegistered !== true) {
     return respond(request, 'deny', 'device_not_registered', [RULE_IDS[0]]);
   }

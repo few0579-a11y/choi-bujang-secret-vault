@@ -1,0 +1,14 @@
+{
+  "name": "최부장의 비밀 자료실",
+  "short_name": "비밀 자료실",
+  "description": "BYTE BACK 방어전 학습용 자료실. 앱을 설치해도 서버가 기기를 승인해야 자료가 열립니다.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#101a28",
+  "theme_color": "#101a28",
+  "lang": "ko",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

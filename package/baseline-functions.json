@@ -6,6 +6,7 @@
     "api/admin/notices/[id].js",
     "api/ai.js",
     "api/auth-config.js",
+    "api/device.js",
     "api/notes.js",
     "api/notes/[id].js",
     "api/notes/[id]/restore.js",

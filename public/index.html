@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>BYTE BACK | 점령된 자료실</title>
+  <meta name="theme-color" content="#101a28">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <style>
     :root { color-scheme: dark; font-family: system-ui, sans-serif; }
     body { margin: 0; min-height: 100vh; background: #101a28; color: #ecf4ff; }
@@ -29,14 +32,19 @@
     li { border: 1px solid #51667c; border-radius: 8px; padding: 17px 19px; background: #1a2a3d; }
     strong { display: block; font-size: 18px; margin-bottom: 5px; }
     li span { color: #bfd0e5; display: block; }
+    .device-code { font-size: 26px; font-weight: 800; letter-spacing: .12em; color: #8ad8df; }
+    .app-mode { font-size: 14px; color: #9fb3c8; }
+    .offline { margin: 16px 0; padding: 12px 16px; border: 1px solid #c9a25a; border-radius: 8px; color: #ffe9bf; background: #5a462033; }
   </style>
 </head>
 <body>
   <main>
-    <div class="eyebrow">BYTE BACK · 3단계 서버 인증</div>
+    <div class="eyebrow">BYTE BACK · 11단계 나만의 접속 앱</div>
     <h1>점령된 자료실</h1>
     <p>메모는 공개 정적 파일이 아닌 서버 데이터베이스에서 불러옵니다. 학습용 가상 자료만 사용합니다.</p>
-    <div class="notice">로그인한 A 계정만 인증된 메모 조회를 사용할 수 있습니다.</div>
+    <div class="notice">로그인하고, 서버가 이 기기를 승인한 뒤에만 메모가 열립니다.</div>
+    <p id="app-mode" class="app-mode"></p>
+    <div id="offline-banner" class="offline hidden">오프라인입니다. 메모는 서버가 확인한 뒤에만 보여 주므로 연결되면 다시 불러옵니다.</div>
 
     <section class="auth" aria-labelledby="auth-title">
       <h2 id="auth-title">로그인</h2>
@@ -50,6 +58,17 @@
         <button id="logout-button" type="button">로그아웃</button>
       </div>
       <p id="auth-status" class="auth-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="device-panel" class="auth hidden" aria-labelledby="device-title">
+      <h2 id="device-title">기기 승인</h2>
+      <p id="device-status">기기 승인 상태를 확인하는 중입니다.</p>
+      <p id="device-code-wrap" class="hidden">승인 코드 <span id="device-code" class="device-code"></span><br>
+        자료실 주인이 Supabase에서 이 코드를 승인해야 열립니다. 이 화면의 버튼만으로는 승인되지 않습니다.</p>
+      <div class="note-actions">
+        <button id="device-request-button" type="button" class="hidden">이 기기 승인 요청</button>
+        <button id="device-refresh-button" type="button">승인 상태 다시 확인</button>
+      </div>
     </section>
 
     <section id="note-editor" class="auth note-editor hidden" aria-labelledby="note-editor-title">
@@ -84,7 +103,95 @@
     const noteBody = document.querySelector('#note-body');
     const saveNoteButton = document.querySelector('#save-note-button');
     const cancelEditButton = document.querySelector('#cancel-edit-button');
+    const devicePanel = document.querySelector('#device-panel');
+    const deviceStatus = document.querySelector('#device-status');
+    const deviceCodeWrap = document.querySelector('#device-code-wrap');
+    const deviceCode = document.querySelector('#device-code');
+    const deviceRequestButton = document.querySelector('#device-request-button');
+    const deviceRefreshButton = document.querySelector('#device-refresh-button');
+    const offlineBanner = document.querySelector('#offline-banner');
     let activeSession = null;
+    // 기기 승인 상태는 화면 변수에만 두고 브라우저 저장소에 저장하지 않습니다. 매번 서버에 묻습니다.
+    let deviceApproved = false;
+
+    // 설치형 앱 표시: 설치 여부는 안내일 뿐 기기 확인이 아닙니다.
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+    document.querySelector('#app-mode').textContent = standalone
+      ? '설치형 앱으로 열었습니다. 설치했다고 기기가 확인된 것은 아니며, 서버 승인이 따로 필요합니다.'
+      : '브라우저에서 열었습니다. 홈 화면에 설치할 수 있지만, 설치와 별개로 서버 승인이 필요합니다.';
+    const showOnline = () => offlineBanner.classList.toggle('hidden', navigator.onLine);
+    window.addEventListener('online', () => { showOnline(); if (activeSession) refreshDevice(); });
+    window.addEventListener('offline', showOnline);
+    showOnline();
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+
+    function lockNotes(message) {
+      deviceApproved = false;
+      noteEditor.classList.add('hidden');
+      resetEditor();
+      const item = document.createElement('li');
+      item.textContent = message;
+      list.replaceChildren(item);
+    }
+
+    function renderDevice(result) {
+      const status = result?.status ?? 'none';
+      deviceCodeWrap.classList.add('hidden');
+      deviceRequestButton.classList.add('hidden');
+      if (status === 'approved') {
+        deviceStatus.textContent = '이 기기는 서버가 승인한 등록 기기입니다.';
+        deviceStatus.className = 'success';
+        return true;
+      }
+      deviceStatus.className = 'error';
+      if (status === 'pending') {
+        deviceStatus.textContent = '승인 대기 중입니다. 승인되기 전에는 메모를 보여 주지 않습니다.';
+        if (result.approvalCode) {
+          deviceCode.textContent = result.approvalCode;
+          deviceCodeWrap.classList.remove('hidden');
+        }
+      } else if (status === 'revoked') {
+        deviceStatus.textContent = '이 기기의 승인이 취소되었습니다. 메모를 보여 주지 않습니다.';
+      } else {
+        deviceStatus.textContent = '등록되지 않은 기기입니다. 승인을 요청해 주세요.';
+        deviceRequestButton.classList.remove('hidden');
+      }
+      return false;
+    }
+
+    async function deviceCall(method) {
+      const response = await fetch('/api/device', {
+        method, cache: 'no-store',
+        headers: { Authorization: `Bearer ${activeSession.access_token}` }
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error === 'TOO_MANY_PENDING_DEVICES'
+        ? '대기 중인 승인 요청이 너무 많습니다. 먼저 정리해 주세요.' : '기기 승인 상태를 확인할 수 없습니다.');
+      return result;
+    }
+
+    async function refreshDevice(method = 'GET') {
+      if (!activeSession?.access_token) return;
+      devicePanel.classList.remove('hidden');
+      try {
+        const approved = renderDevice(await deviceCall(method));
+        if (!approved) return lockNotes('기기 승인 전에는 메모를 보여 주지 않습니다.');
+        deviceApproved = true;
+        noteEditor.classList.remove('hidden');
+        await loadNotes(activeSession);
+      } catch (error) {
+        deviceStatus.textContent = error.message;
+        deviceStatus.className = 'error';
+        lockNotes('기기 승인을 확인하지 못해 메모를 보여 주지 않습니다.');
+      }
+    }
+
+    deviceRequestButton.addEventListener('click', async () => {
+      deviceRequestButton.disabled = true;
+      await refreshDevice('POST');
+      deviceRequestButton.disabled = false;
+    });
+    deviceRefreshButton.addEventListener('click', () => refreshDevice('GET'));
 
     function showAuthStatus(message, kind = '') {
       authStatus.textContent = message;
@@ -98,6 +205,10 @@
           : {};
         const response = await fetch('/api/notes', { cache: 'no-store', headers });
         if (response.status === 401) throw new Error('로그인이 필요합니다.');
+        if (response.status === 403) {
+          lockNotes('서버가 이 기기를 승인하지 않아 메모를 보여 주지 않습니다.');
+          return;
+        }
         if (!response.ok) throw new Error('서버 자료를 읽을 수 없습니다.');
         const data = await response.json();
         if (!Array.isArray(data.notes)) throw new Error('자료 형식이 맞지 않습니다.');
@@ -168,7 +279,8 @@
       const config = await configResponse.json();
       if (!configResponse.ok) throw new Error(config.detail || 'Supabase 로그인을 사용할 수 없습니다.');
       supabase = createClient(config.url, config.publishableKey, {
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        // 11단계: 로그인 토큰을 localStorage에 남기지 않도록 화면 메모리에만 둡니다(새로 고치면 다시 로그인).
+        auth: { persistSession: false, autoRefreshToken: true, detectSessionInUrl: false }
       });
     } catch (error) {
       loginButton.disabled = true;
@@ -182,15 +294,17 @@
           activeSession = currentSession;
           loginForm.classList.add('hidden');
           loggedIn.classList.remove('hidden');
-          noteEditor.classList.remove('hidden');
           userEmail.textContent = `로그인됨: ${currentSession.user.email || currentSession.user.id}`;
           showAuthStatus('로그인 상태입니다.', 'success');
-          loadNotes(currentSession);
+          lockNotes('기기 승인 상태를 확인하는 중입니다.');
+          refreshDevice('GET');
         } else {
           activeSession = null;
           loginForm.classList.remove('hidden');
           loggedIn.classList.add('hidden');
           noteEditor.classList.add('hidden');
+          devicePanel.classList.add('hidden');
+          deviceApproved = false;
           resetEditor();
           userEmail.textContent = '';
           list.replaceChildren();

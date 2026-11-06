@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { verifyNotesRequest } from '../src/notes-auth.mjs';
 import { denyAccess, noteResourceId } from '../src/zones.mjs';
+import { isApprovedDevice } from '../src/device-approval.mjs';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
 
@@ -25,6 +26,10 @@ export default async function handler(request, response) {
     if (!url || !key) return response.status(503).json({ error: 'SERVER_NOT_CONFIGURED' });
 
     const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+    // 11단계: 화면 전용 목록·생성 경로는 서버가 승인한 기기에서만 엽니다. 앱 설치 여부나 본문 주장은 보지 않습니다.
+    if (!(await isApprovedDevice(db, identity.userId, request))) {
+      return denyAccess(response, { status: 403, error: 'DEVICE_NOT_APPROVED', reason: 'device_not_approved', route: `${request.method} /api/notes` });
+    }
     if (request.method === 'POST') {
       let input;
       try {

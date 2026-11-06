@@ -1,4 +1,4 @@
-# BYTE BACK 방어전 — 1~10단계 구현 기록
+# BYTE BACK 방어전 — 1~11단계 구현 기록
 
 1~3단계의 인증·CRUD 구조에 사용자별 소유자 검사와 DB RLS 재현 자료를 추가했습니다.
 
@@ -106,9 +106,22 @@
 
 - 심판의 실제 공격 결과는 이 표에 적지 않습니다.
 
+## 11단계 나만의 접속 앱 (설치형 웹앱 + 기기 승인)
+
+- **설치형 웹앱:** `public/manifest.webmanifest`(앱 이름·아이콘), `public/sw.js`(오프라인 안내 `public/offline.html`과 아이콘만 저장, `/api/` 응답·메모·토큰은 저장 안 함). 따로 설치하는 접속 프로그램은 없습니다. 화면은 "설치형으로 열림"을 안내만 하고, **설치 여부를 기기 확인 근거로 쓰지 않습니다.**
+- **기기 승인 흐름:** 로그인 → `GET /api/device`로 상태 확인 → 미등록이면 「이 기기 승인 요청」(`POST /api/device`) → 승인 코드 표시(대기) → 자료실 주인이 Supabase SQL Editor에서 그 코드만 `approved`로 바꿈(`supabase_stage11_devices.sql` 아래쪽 주석) → 「승인 상태 다시 확인」 → 승인된 경우에만 메모를 불러옵니다.
+  - 승인 요청 버튼은 `pending`만 만듭니다. 본문의 `status`·`approved`·`deviceId` 주장은 읽지 않습니다.
+  - 기기 증명값은 서버가 만든 무작위 값이며 `HttpOnly; Secure; SameSite=Strict` 쿠키(`__Host-vault_device`)로만 브라우저에 둡니다. JS로 읽을 수 없고, DB에는 SHA-256 지문만 저장합니다.
+  - 로그인 토큰도 `persistSession: false`로 바꿔 localStorage에 남기지 않습니다(새로 고치면 다시 로그인).
+  - `device_approvals` 표는 RLS를 켜고 anon·authenticated 권한을 모두 회수했습니다. 서버(secret key)만 접근합니다.
+- **서버 강제 범위(결정: A안):** 화면 전용 `GET/POST /api/notes`(목록·생성)는 승인 기기가 아니면 `403 DEVICE_NOT_APPROVED`. 판정기 허용 경로인 단건 `/api/notes/:id`·복원 경로는 기존대로 엔진(기기 서명·판정기)+토큰+주인 확인을 유지합니다(심판·엔진 요청에는 이 앱의 기기 쿠키가 없기 때문).
+- **판정기 `request_integrity` 규칙:** 계약 18개 이름 밖의 이름이 끼었거나, `deviceId`가 16자리 16진수가 아니거나, 경로에 `../`·`//`·인코딩된 `/`·`\`가 있거나, 쿼리가 비었다면서 지문이 빈 문자열 지문이 아니면 `deny / request_integrity_failed`. 기존 구역 규칙의 경로-route 대조와 함께 "서명 뒤 경로 변경"을 거부합니다. 서명 검증과 본문 대조 자체는 엔진(릴레이) 몫이며 계약에 본문 지문이 없어 판정기는 본문을 보지 않습니다.
+- 테스트 명령: `npm.cmd run fixture:11`(10건), `npm.cmd run fixture:8`, `npm.cmd run decider:test` — 모두 가상 요청 연습이며 심판 판정이 아닙니다.
+- **미실행:** Supabase에 `supabase_stage11_devices.sql` 적용 전에는 배포에서 기기 승인 흐름이 동작하지 않습니다(`DEVICE_STATUS_UNAVAILABLE`). 배포에서 승인 전 자료 없음·승인 후 기존 화면 정상은 학생이 직접 확인한 뒤에만 기록합니다.
+
 ## 현재 구조
 
-- 첫 화면 `/`은 로그인한 사용자의 세션 토큰으로 `/api/notes`를 호출합니다. 기존 가상 메모 4건과 사용자가 추가한 메모를 목록으로 표시합니다.
+- 첫 화면 `/`은 로그인한 뒤 서버가 기기를 승인한 경우에만 세션 토큰으로 `/api/notes`를 호출합니다(11단계). 기존 가상 메모 4건과 사용자가 추가한 메모를 목록으로 표시합니다.
 - `api/notes.js`는 `GET /api/notes`와 `POST /api/notes`를 제공합니다.
 - `api/notes/[id].js`는 `GET`, `PUT`, `DELETE /api/notes/:id`를 제공합니다.
 - 모든 메모 API는 `src/verify-login.mjs`의 `createLoginVerifier()`로 Bearer 토큰을 검증합니다.
