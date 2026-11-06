@@ -1,0 +1,115 @@
+{
+  "schema": "aleph.xdr.deny-rules.v1",
+  "moduleKey": "brute-force",
+  "rules": [
+    {
+      "type": "deny",
+      "match": {
+        "srcip": "203.0.113.10"
+      },
+      "startsAt": "2026-09-27T00:12:01.000Z",
+      "expiresAt": "2026-09-27T01:12:40.000Z",
+      "alertIds": [
+        "bf-01",
+        "bf-02"
+      ],
+      "reason": "rapid_failures_same_source"
+    },
+    {
+      "type": "deny",
+      "match": {
+        "srcip": "198.51.100.20"
+      },
+      "startsAt": "2026-09-27T00:14:02.000Z",
+      "expiresAt": "2026-09-27T01:14:02.000Z",
+      "alertIds": [
+        "bf-03"
+      ],
+      "reason": "rapid_failures_same_source"
+    },
+    {
+      "type": "deny",
+      "match": {
+        "srcip": "192.0.2.30"
+      },
+      "startsAt": "2026-09-27T00:20:11.000Z",
+      "expiresAt": "2026-09-27T01:20:11.000Z",
+      "alertIds": [
+        "bf-04"
+      ],
+      "reason": "rapid_failures_same_source"
+    },
+    {
+      "type": "deny",
+      "match": {
+        "srcip": "203.0.113.21"
+      },
+      "startsAt": "2026-09-27T00:21:00.000Z",
+      "expiresAt": "2026-09-27T01:21:00.000Z",
+      "alertIds": [
+        "bf-05"
+      ],
+      "reason": "password_spray_many_accounts"
+    },
+    {
+      "type": "deny",
+      "match": {
+        "srcip": "198.51.100.44"
+      },
+      "startsAt": "2026-09-27T02:02:15.000Z",
+      "expiresAt": "2026-09-27T03:02:15.000Z",
+      "alertIds": [
+        "bf-06"
+      ],
+      "reason": "rapid_failures_same_source"
+    },
+    {
+      "type": "deny",
+      "match": {
+        "srcip": "203.0.113.15"
+      },
+      "startsAt": "2026-09-27T02:05:40.000Z",
+      "expiresAt": "2026-09-27T03:05:40.000Z",
+      "alertIds": [
+        "bf-07"
+      ],
+      "reason": "rapid_failures_same_source"
+    },
+    {
+      "type": "deny",
+      "match": {
+        "srcip": "192.0.2.18"
+      },
+      "startsAt": "2026-09-27T04:10:02.000Z",
+      "expiresAt": "2026-09-27T05:10:02.000Z",
+      "alertIds": [
+        "bf-08"
+      ],
+      "reason": "rapid_failures_same_source"
+    },
+    {
+      "type": "deny",
+      "match": {
+        "srcip": "198.51.100.8"
+      },
+      "startsAt": "2026-09-27T05:22:18.000Z",
+      "expiresAt": "2026-09-27T06:22:18.000Z",
+      "alertIds": [
+        "bf-09"
+      ],
+      "reason": "password_spray_many_accounts"
+    },
+    {
+      "type": "deny",
+      "match": {
+        "srcip": "203.0.113.40"
+      },
+      "startsAt": "2026-09-27T06:40:01.000Z",
+      "expiresAt": "2026-09-27T07:40:01.000Z",
+      "alertIds": [
+        "bf-10"
+      ],
+      "reason": "rapid_failures_same_source"
+    }
+  ]
+}

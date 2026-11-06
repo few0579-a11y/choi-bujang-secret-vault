@@ -163,6 +163,20 @@
 - 작전실 화면의 실제 배포 확인과 `ops:regress` 실측은 이 커밋을 push·배포한 뒤 학생이 실행합니다. 실행 전에는 `ops/` 표가 없거나 이전 결과입니다.
 - 회수된 신원·미등록 기기의 재전송 차단은 엔진(기기 서명·신원 확인)과 판정기 `device_registered`·`request_integrity` 규칙에 의존하며, 판정기 계약에 "회수됨" 값이 없어 판정기에 새 규칙을 더하지 않았습니다.
 
+## 보너스 xdr-01 무차별 로그인 공격 탐지 (brute-force)
+
+| 파일 | 하는 일 |
+|---|---|
+| `xdr/brute-force/read-alerts.mjs` | 확인용. 경보에서 시각·주소·계정·수준·설명만 뽑음(`npm run xdr:read`, 경보 수 = 줄 수 확인). decide.mjs 는 불러오지 않음 |
+| `xdr/brute-force/patterns.json` | MITRE ATT&CK T1110 근거 패턴 2개: `rapid_failures_same_source`(T1110.001, 수준 10↑·실패 30건↑) · `password_spray_many_accounts`(T1110.003, 수준 10↑·계정 8개↑) |
+| `xdr/brute-force/decide.mjs` | 위 패턴을 상수로 옮겨 `decide(alert)` → `{action, confidence, reason}`. 0.85↑ block · 0.5↑ alert · 그 아래 record. import·파일 입출력·네트워크 없음 |
+| `xdr/brute-force/respond.mjs` | block 결과만 주소 단위 거부 규칙(`xdr/ztna-deny-rules.json`, 근거 경보 시각부터 1시간 만료, 근거 경보 ID)으로 만들고, block·alert 를 `xdr/alerts.log` 에 한 줄씩(같은 경보 중복 없음) 쌓음(`npm run xdr:respond`). 정상 이벤트에 나온 주소는 막지 않음 |
+
+- 실행: `npm run xdr:run -- brute-force` → `xdr/brute-force/result.json` (연습 경보 28건: block 10 · alert 9 · record 9, 정상 이벤트 block 0)
+- 다시 흘려 보기: `npm run xdr:respond` 가 경보 시각마다 `isDenied` 로 확인 — block 주소만 막히고 alert·정상 주소는 통과(어긋남 0건)
+- 실패 뒤 성공한 경보는 본인일 수도 탈취일 수도 있어 block 하지 않고 alert(사람이 확인)
+- **미연결**: 판정기 요청 계약(`docs/DECIDER_REQUEST.md`)에 출발 주소 칸이 없어 `src/decider.mjs` 는 이 거부 규칙을 집행하지 않음. 판정기 기존 규칙은 고치지 않았고, 엔진이 주소를 넘기게 되면 확인 단계 하나로 꽂는다.
+
 ## 현재 구조
 
 - 첫 화면 `/`은 로그인한 뒤 서버가 기기를 승인한 경우에만 세션 토큰으로 `/api/notes`를 호출합니다(11단계). 기존 가상 메모 4건과 사용자가 추가한 메모를 목록으로 표시합니다.

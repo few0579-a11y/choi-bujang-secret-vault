@@ -13,6 +13,8 @@
     "fixture:8": "node scripts/fixture-8.mjs",
     "fixture:11": "node scripts/fixture-11.mjs",
     "xdr:run": "node scripts/xdr-run.mjs",
+    "xdr:respond": "node xdr/brute-force/respond.mjs",
+    "xdr:read": "node xdr/brute-force/read-alerts.mjs",
     "ops:regress": "node scripts/regression.mjs",
     "policy:snapshot": "node scripts/policy-backup.mjs snapshot",
     "policy:verify": "node scripts/policy-backup.mjs verify",
