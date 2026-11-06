@@ -1,7 +1,7 @@
 // 자체 점검: 실제 배포 주소에 요청하고 결과만 기록합니다. 심판 판정이 아닙니다.
 // 12단계 규칙(심판 격리 환경):
 // - 공개 HTTPS 주소에 GET만 보냅니다. 쓰기 요청(POST·PUT)이 필요한 점검은 보내지 않고 observed = 'not_run'.
-// - 요청을 보낸 점검은 한 점검에 요청 하나, observed = 'GET <주소> → HTTP <받은 상태> · x-request-id <attackId>'.
+// - 요청을 보낸 점검은 한 점검에 요청 하나, observed = 'GET <주소> → HTTP <받은 상태> · <서버 요청 ID(x-vercel-id)> · x-request-id <attackId>'.
 // - 점검 목록 밖의 요청은 보내지 않습니다(보낸 요청과 기록이 1:1로 맞아야 함). 순서도 기록 순서와 같습니다.
 const NOT_RUN = 'not_run';
 
@@ -22,7 +22,12 @@ export async function runAttackChecks(config) {
       method: 'GET', headers: { ...headers, 'x-request-id': attackId, 'x-aleph-attack-id': attackId },
       redirect: 'error', signal: AbortSignal.timeout(10000),
     });
-    results.push({ attackId, expected, observed: `GET ${target.origin}${target.pathname} → HTTP ${response.status} · x-request-id ${attackId}` });
+    // 서버 관측 식별자: 서버(Vercel)가 응답에 붙인 요청 ID(x-vercel-id). 원본 DB(Supabase)는 sb-request-id.
+    // 받은 값만 그대로 적고, 없으면 지어내지 않고 '없음'으로 둡니다.
+    const serverId = response.headers.get('x-vercel-id')
+      ? `x-vercel-id ${response.headers.get('x-vercel-id')}`
+      : response.headers.get('sb-request-id') ? `sb-request-id ${response.headers.get('sb-request-id')}` : '서버 요청 ID 없음';
+    results.push({ attackId, expected, observed: `GET ${target.origin}${target.pathname} → HTTP ${response.status} · ${serverId} · x-request-id ${attackId}` });
     return response;
   };
   const notRun = (attackId, expected) => results.push({ attackId, expected, observed: NOT_RUN });

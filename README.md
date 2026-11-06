@@ -158,6 +158,7 @@
 - 자기 점검 기록 형식: 요청을 보낸 점검은 한 점검에 요청 하나, `observed`는 받은 상태만(`HTTP 401` 형식), 보내지 않은 점검은 `not_run`. 공개 로그인 설정 조회(`/api/auth-config`)도 점검 하나로 기록해 보낸 요청 9건과 기록 9건이 1:1로 맞습니다(두 번째 제출 S12_SCREEN_MISMATCH 53점 → 수정: 이전에는 설명 문구와 상태가 섞이고 기록되지 않은 요청 1건이 있었음).
 - 세 번째 제출도 S12_SCREEN_MISMATCH(53점, "9개 점검의 실제 요청을 확인하지 못함") → 기록에 보낸 요청의 방법·전체 주소와 요청 ID를 함께 남기도록 바꿈: `GET <주소> → HTTP <상태> · x-request-id <UUID>`(UUID는 `node:crypto` randomUUID로 만들어 같은 값을 요청 헤더로 보냄).
 - 네 번째 제출도 53점("attackId가 결과에만 있고 요청은 별도 요청 ID로 기록돼 연결 못 함") → 요청 식별자를 무작위 UUID 대신 **attackId 자체**로 바꿈. 요청 헤더 `x-request-id`·`x-aleph-attack-id` = attackId, 기록도 `· x-request-id <attackId>`.
+- 이후 제출(534ca11·b0d8b91)도 53점, 메모가 "서버 관측 식별자와 연결"을 요구 → 기록에 서버가 응답에 붙인 요청 ID(`x-vercel-id`, Supabase는 `sb-request-id`)를 받은 그대로 추가. 없으면 '서버 요청 ID 없음'.
 - 작전실 화면의 실제 배포 확인과 `ops:regress` 실측은 이 커밋을 push·배포한 뒤 학생이 실행합니다. 실행 전에는 `ops/` 표가 없거나 이전 결과입니다.
 - 회수된 신원·미등록 기기의 재전송 차단은 엔진(기기 서명·신원 확인)과 판정기 `device_registered`·`request_integrity` 규칙에 의존하며, 판정기 계약에 "회수됨" 값이 없어 판정기에 새 규칙을 더하지 않았습니다.
 
