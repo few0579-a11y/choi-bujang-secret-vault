@@ -8,54 +8,106 @@
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <style>
-    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
-    body { margin: 0; min-height: 100vh; background: #101a28; color: #ecf4ff; }
-    main { max-width: 760px; margin: 0 auto; padding: 44px 22px 64px; }
-    .eyebrow { color: #8ad8df; font-size: 14px; font-weight: 700; letter-spacing: .08em; }
-    h1 { margin: 16px 0; font-size: clamp(30px, 7vw, 48px); line-height: 1.2; }
-    p { font-size: 17px; line-height: 1.7; color: #bfd0e5; }
-    .notice { margin: 26px 0; padding: 18px; border: 1px solid #d07384; border-radius: 8px; color: #ffe3e8; background: #612a3544; }
-    .auth { margin: 26px 0; padding: 18px; border: 1px solid #51667c; border-radius: 8px; background: #172538; }
+    :root {
+      color-scheme: dark; font-family: "Pretendard", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --bg: #0e1724; --panel: #162335; --panel-2: #1c2c42; --line: #2d415a; --line-strong: #4a6280;
+      --text: #ecf4ff; --muted: #a9bcd2; --accent: #8ad8df; --ok: #6fd39a; --ok-bg: #173d2b;
+      --warn: #f2c66d; --warn-bg: #3d3216; --bad: #ff9aab; --bad-bg: #3f1c26; --info: #9db8ff; --info-bg: #1d2a4d;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
+    main { max-width: 880px; margin: 0 auto; padding: 36px 20px 72px; }
+    .eyebrow { color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: .08em; }
+    h1 { margin: 10px 0 8px; font-size: clamp(28px, 6vw, 42px); line-height: 1.2; }
+    h2 { margin: 0 0 4px; font-size: 20px; }
+    h3 { margin: 0; font-size: 16px; }
+    p { font-size: 16px; line-height: 1.65; color: var(--muted); margin: 8px 0; }
+    .lead { margin-bottom: 18px; }
+    .section-desc { margin: 0 0 14px; font-size: 14px; }
+    /* 접속 상태 띠: 로그인 폼 위에서 앱 실행 방식·로그인·기기 승인을 한눈에 */
+    .status-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 18px 0; }
+    .chip { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+    .chip-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .chip-value { font-weight: 700; font-size: 15px; }
+    .tone-ok { color: var(--ok); } .tone-warn { color: var(--warn); } .tone-bad { color: var(--bad); } .tone-muted { color: var(--muted); }
+    .notice { margin: 0 0 18px; padding: 12px 16px; border-left: 4px solid #d07384; border-radius: 6px; color: #ffe3e8; background: #612a3533; font-size: 15px; }
+    .app-mode { font-size: 13px; color: var(--muted); margin: 0 0 18px; }
+    .auth { margin: 18px 0; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+    .step-tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
     form { display: grid; gap: 12px; }
     label { display: grid; gap: 6px; color: #d9e8f7; font-size: 14px; }
-    input { width: 100%; box-sizing: border-box; border: 1px solid #71879b; border-radius: 6px; padding: 11px 12px; background: #101a28; color: #ecf4ff; font-size: 16px; }
-    button { width: fit-content; border: 0; border-radius: 6px; padding: 10px 14px; background: #8ad8df; color: #10202c; font-weight: 800; cursor: pointer; }
+    input, textarea { width: 100%; border: 1px solid var(--line-strong); border-radius: 8px; padding: 11px 12px; background: var(--bg); color: var(--text); font-size: 16px; }
+    input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    textarea { min-height: 100px; resize: vertical; }
+    button { width: fit-content; border: 0; border-radius: 8px; padding: 10px 16px; background: var(--accent); color: #10202c; font-weight: 800; font-size: 15px; cursor: pointer; }
+    button.secondary { background: transparent; color: var(--text); border: 1px solid var(--line-strong); }
+    button.danger { background: transparent; color: var(--bad); border: 1px solid #7a3b4a; }
     button:disabled { cursor: wait; opacity: .65; }
-    .auth-status { min-height: 24px; margin: 12px 0 0; }
-    .error { color: #ffb3c0; }
-    .success { color: #b4e6b4; }
-    .hidden { display: none; }
-    textarea { width: 100%; min-height: 100px; box-sizing: border-box; border: 1px solid #71879b; border-radius: 6px; padding: 11px 12px; background: #101a28; color: #ecf4ff; font-size: 16px; resize: vertical; }
-    .note-actions { display: flex; gap: 8px; margin-top: 12px; }
-    .note-editor { margin-top: 26px; }
+    .auth-status { min-height: 22px; margin: 12px 0 0; font-size: 14px; }
+    .error { color: var(--bad); }
+    .success { color: var(--ok); }
+    .hidden { display: none !important; }
+    .note-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .note-editor { margin-top: 18px; }
     ul { list-style: none; display: grid; gap: 12px; padding: 0; }
-    li { border: 1px solid #51667c; border-radius: 8px; padding: 17px 19px; background: #1a2a3d; }
-    strong { display: block; font-size: 18px; margin-bottom: 5px; }
-    li span { color: #bfd0e5; display: block; }
-    .device-code { font-size: 26px; font-weight: 800; letter-spacing: .12em; color: #8ad8df; }
-    .app-mode { font-size: 14px; color: #9fb3c8; }
-    .offline { margin: 16px 0; padding: 12px 16px; border: 1px solid #c9a25a; border-radius: 8px; color: #ffe9bf; background: #5a462033; }
+    li { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; background: var(--panel-2); }
+    strong { display: block; font-size: 17px; margin-bottom: 5px; }
+    li span { color: var(--muted); display: block; white-space: pre-wrap; }
+    .device-code { display: inline-block; margin: 4px 0; padding: 6px 12px; border-radius: 8px; background: var(--bg); font-size: 26px; font-weight: 800; letter-spacing: .14em; color: var(--accent); }
+    .offline { margin: 0 0 16px; padding: 12px 16px; border: 1px solid #c9a25a; border-radius: 8px; color: #ffe9bf; background: #5a462033; }
+    .list-title { margin: 30px 0 4px; font-size: 18px; }
+    /* 탈환 작전실 */
+    .legend { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 10px 0 14px; font-size: 13px; color: var(--muted); }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-right: 4px; vertical-align: middle; }
+    .badge.measured { background: var(--ok-bg); color: var(--ok); }
+    .badge.code { background: var(--info-bg); color: var(--info); }
+    .badge.not_connected { background: var(--warn-bg); color: var(--warn); }
+    .badge.error { background: var(--bad-bg); color: var(--bad); }
+    .ops-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .ops-meta { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0 0 16px; padding: 10px 14px; border-radius: 8px; background: var(--bg); font-size: 13px; }
+    .ops-meta dt { color: var(--muted); } .ops-meta dd { margin: 0; font-family: ui-monospace, Consolas, monospace; word-break: break-all; }
+    .ops-message { font-size: 14px; }
+    .ops-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .tile { padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2); }
+    .tile-num { font-size: 26px; font-weight: 800; line-height: 1.1; }
+    .tile-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
     .ops-grid { display: grid; gap: 12px; }
-    .ops-card { padding: 12px; border: 1px solid #51667c; border-radius: 6px; }
-    .ops-card h3 { margin: 0 0 6px; font-size: 1rem; }
-    .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: .8rem; margin-left: 6px; }
-    .badge.measured { background: #1f6f43; } .badge.code { background: #3b4f7a; }
-    .badge.not_connected, .badge.error { background: #7a3b3b; }
-    .ops-card table { width: 100%; border-collapse: collapse; font-size: .85rem; }
-    .ops-card td, .ops-card th { border-top: 1px solid #2c3e55; padding: 3px 4px; text-align: left; }
+    .ops-card { padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2); }
+    .ops-card .card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+    .ops-card p { font-size: 14px; margin: 6px 0; }
+    .ops-card .source { font-size: 12px; color: var(--muted); }
+    .kv { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+    .kv span { padding: 3px 10px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); font-size: 13px; }
+    .check { display: inline-block; margin-top: 8px; padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: 700; }
+    .check.ok { background: var(--ok-bg); color: var(--ok); } .check.bad { background: var(--bad-bg); color: var(--bad); }
+    details { margin-top: 8px; } summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+    .table-wrap { overflow-x: auto; margin-top: 8px; }
+    .ops-card table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .ops-card th { color: var(--muted); font-weight: 600; text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
+    .ops-card td { padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
   </style>
 </head>
 <body>
   <main>
-    <div class="eyebrow">BYTE BACK · 11단계 나만의 접속 앱</div>
-    <h1>점령된 자료실</h1>
-    <p>메모는 공개 정적 파일이 아닌 서버 데이터베이스에서 불러옵니다. 학습용 가상 자료만 사용합니다.</p>
+    <header>
+      <div class="eyebrow">BYTE BACK · 12단계 탈환 작전실</div>
+      <h1>점령된 자료실</h1>
+      <p class="lead">메모는 공개 파일이 아니라 서버 데이터베이스에서 불러옵니다. 학습용 가상 자료만 사용합니다.</p>
+    </header>
+
+    <div class="status-strip" aria-label="접속 상태">
+      <div class="chip"><span class="chip-label">앱 실행 방식</span><span id="mode-chip" class="chip-value tone-muted">확인 중</span></div>
+      <div class="chip"><span class="chip-label">로그인</span><span id="login-chip" class="chip-value tone-muted">로그인 전</span></div>
+      <div class="chip"><span class="chip-label">기기 승인 (서버 판단)</span><span id="device-chip" class="chip-value tone-muted">로그인 후 확인</span></div>
+    </div>
     <div class="notice">로그인하고, 서버가 이 기기를 승인한 뒤에만 메모가 열립니다.</div>
     <p id="app-mode" class="app-mode"></p>
     <div id="offline-banner" class="offline hidden">오프라인입니다. 메모는 서버가 확인한 뒤에만 보여 주므로 연결되면 다시 불러옵니다.</div>
 
     <section class="auth" aria-labelledby="auth-title">
-      <h2 id="auth-title">로그인</h2>
+      <div class="section-head"><h2 id="auth-title">로그인</h2><span class="step-tag">3단계 · 서버가 토큰 검증</span></div>
       <form id="login-form">
         <label>이메일<input id="email" name="email" type="email" autocomplete="email" required></label>
         <label>비밀번호<input id="password" name="password" type="password" autocomplete="current-password" required></label>
@@ -63,44 +115,54 @@
       </form>
       <div id="logged-in" class="hidden">
         <p id="user-email"></p>
-        <button id="logout-button" type="button">로그아웃</button>
+        <button id="logout-button" type="button" class="secondary">로그아웃</button>
       </div>
       <p id="auth-status" class="auth-status" role="status" aria-live="polite"></p>
     </section>
 
     <section id="device-panel" class="auth hidden" aria-labelledby="device-title">
-      <h2 id="device-title">기기 승인</h2>
+      <div class="section-head"><h2 id="device-title">기기 승인</h2><span class="step-tag">11단계 · 서버가 승인</span></div>
       <p id="device-status">기기 승인 상태를 확인하는 중입니다.</p>
-      <p id="device-code-wrap" class="hidden">승인 코드 <span id="device-code" class="device-code"></span><br>
+      <p id="device-code-wrap" class="hidden">승인 코드<br><span id="device-code" class="device-code"></span><br>
         자료실 주인이 Supabase에서 이 코드를 승인해야 열립니다. 이 화면의 버튼만으로는 승인되지 않습니다.</p>
       <div class="note-actions">
         <button id="device-request-button" type="button" class="hidden">이 기기 승인 요청</button>
-        <button id="device-refresh-button" type="button">승인 상태 다시 확인</button>
+        <button id="device-refresh-button" type="button" class="secondary">승인 상태 다시 확인</button>
       </div>
     </section>
 
     <section id="note-editor" class="auth note-editor hidden" aria-labelledby="note-editor-title">
-      <h2 id="note-editor-title">메모 작성</h2>
+      <div class="section-head"><h2 id="note-editor-title">메모 작성</h2><span class="step-tag">4단계 · 내 메모만</span></div>
       <form id="note-form">
         <input id="note-id" type="hidden">
         <label>제목<input id="note-title" type="text" required></label>
         <label>내용<textarea id="note-body" required></textarea></label>
         <div class="note-actions">
           <button id="save-note-button" type="submit">메모 추가</button>
-          <button id="cancel-edit-button" type="button" class="hidden">수정 취소</button>
+          <button id="cancel-edit-button" type="button" class="secondary hidden">수정 취소</button>
         </div>
       </form>
     </section>
 
     <section id="ops-panel" class="auth hidden" aria-labelledby="ops-title">
-      <h2 id="ops-title">탈환 작전실</h2>
-      <p>서버가 이번 요청에서 실제로 읽은 기록만 보여 줍니다. 메모 제목·본문과 기기 지문은 표시하지 않습니다.
-        표시: <span class="badge measured">실측</span> DB를 지금 읽음 · <span class="badge code">코드</span> 배포된 설정값 · <span class="badge not_connected">미실행</span> 연결된 경로 없음</p>
-      <button id="ops-refresh-button" type="button">작전실 새로 읽기</button>
-      <p id="ops-meta" role="status" aria-live="polite"></p>
+      <div class="section-head"><h2 id="ops-title">탈환 작전실</h2><span class="step-tag">12단계 · 서버 기록만 표시</span></div>
+      <p class="section-desc">서버가 이번 요청에서 실제로 읽은 기록만 보여 줍니다. 메모 제목·본문과 기기 지문은 표시하지 않고, 빈 칸을 0건으로 채우지 않습니다.</p>
+      <div class="legend">
+        <span><span class="badge measured">실측</span>DB를 지금 읽음</span>
+        <span><span class="badge code">코드</span>배포된 설정값</span>
+        <span><span class="badge not_connected">미실행</span>연결된 경로 없음</span>
+        <span><span class="badge error">읽기 실패</span>읽지 못함</span>
+      </div>
+      <div class="ops-toolbar">
+        <button id="ops-refresh-button" type="button" class="secondary">작전실 새로 읽기</button>
+        <span id="ops-meta" class="ops-message" role="status" aria-live="polite"></span>
+      </div>
+      <dl id="ops-info" class="ops-meta hidden"></dl>
+      <div id="ops-tiles" class="ops-tiles"></div>
       <div id="ops-grid" class="ops-grid"></div>
     </section>
 
+    <h2 class="list-title">내 메모</h2>
     <ul id="notes" aria-live="polite"><li>로그인 후 메모를 불러옵니다.</li></ul>
   </main>
   <script type="module">
@@ -131,11 +193,14 @@
     // 기기 승인 상태는 화면 변수에만 두고 브라우저 저장소에 저장하지 않습니다. 매번 서버에 묻습니다.
     let deviceApproved = false;
 
+    // 상태 띠: 화면 표시용. 기기 승인 값은 서버(/api/device) 응답으로만 바꿉니다.
+    function setChip(id, text, tone = 'muted') { const c = document.querySelector(id); c.textContent = text; c.className = `chip-value tone-${tone}`; }
     // 설치형 앱 표시: 설치 여부는 안내일 뿐 기기 확인이 아닙니다.
     const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
     document.querySelector('#app-mode').textContent = standalone
       ? '설치형 앱으로 열었습니다. 설치했다고 기기가 확인된 것은 아니며, 서버 승인이 따로 필요합니다.'
       : '브라우저에서 열었습니다. 홈 화면에 설치할 수 있지만, 설치와 별개로 서버 승인이 필요합니다.';
+    setChip('#mode-chip', standalone ? '설치형 앱' : '브라우저');
     const showOnline = () => offlineBanner.classList.toggle('hidden', navigator.onLine);
     window.addEventListener('online', () => { showOnline(); if (activeSession) refreshDevice(); });
     window.addEventListener('offline', showOnline);
@@ -146,14 +211,37 @@
     const opsPanel = document.querySelector('#ops-panel');
     const opsGrid = document.querySelector('#ops-grid');
     const opsMeta = document.querySelector('#ops-meta');
+    const opsInfo = document.querySelector('#ops-info');
+    const opsTiles = document.querySelector('#ops-tiles');
     const STATUS_LABEL = { measured: '실측', code: '코드', not_connected: '미실행', error: '읽기 실패' };
+    const KIND_LABEL = { pending: '대기', approved: '승인', revoked: '회수', baseline: '기준본', insert: '저장', update: '수정', delete: '삭제', restore: '복원',
+      restored: '복원됨', undeleted: '삭제 취소', no_change: '변화 없음' };
     const el = (tag, text, cls) => { const n = document.createElement(tag); if (text != null) n.textContent = String(text); if (cls) n.className = cls; return n; };
-    function opsTable(head, rows) {
+    // 서버가 보낸 시각(UTC)을 한국 시각으로 읽기 쉽게만 바꿉니다. 값 자체는 바꾸지 않고, 원문은 마우스를 올리면 보입니다.
+    const fmtTime = value => {
+      if (!value) return '—';
+      const t = new Date(value);
+      return Number.isNaN(t.getTime()) ? String(value) : t.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    };
+    const label = key => KIND_LABEL[key] ? `${KIND_LABEL[key]}(${key})` : key;
+    function opsTable(head, rows, timeCols = []) {
+      const wrap = el('div', null, 'table-wrap');
       const table = el('table');
       const tr = el('tr'); head.forEach(h => tr.append(el('th', h))); table.append(tr);
-      rows.slice(0, 20).forEach(r => { const row = el('tr'); r.forEach(c => row.append(el('td', c ?? '—'))); table.append(row); });
-      return table;
+      rows.slice(0, 20).forEach(r => {
+        const row = el('tr');
+        r.forEach((c, i) => { const td = el('td', timeCols.includes(i) ? fmtTime(c) : (c ?? '—')); if (timeCols.includes(i) && c) td.title = c; row.append(td); });
+        table.append(row);
+      });
+      wrap.append(table);
+      return wrap;
     }
+    function recordsBox(total, table) {
+      const box = el('details');
+      box.append(el('summary', total > 20 ? `기록 보기 (최근 20건 / 전체 ${total}건)` : `기록 보기 (${total}건)`), table);
+      return box;
+    }
+    const pills = counts => { const kv = el('div', null, 'kv'); const entries = Object.entries(counts ?? {}); (entries.length ? entries : [['없음', 0]]).forEach(([k, v]) => kv.append(el('span', k === '없음' ? '기록 없음' : `${label(k)} ${v}`))); return kv; };
     // 서버가 보낸 counts 합계 = total = 받은 records 수를 화면에서 다시 셉니다.
     function crossCheck(section) {
       if (section?.status !== 'measured') return null;
@@ -162,55 +250,83 @@
       const sum = Object.values(section.counts ?? {}).reduce((a, b) => a + b, 0);
       const same = sum === section.total && (section.records ?? []).length === section.total
         && Object.keys({ ...recount, ...section.counts }).every(k => recount[k] === section.counts[k]);
-      return el('p', same ? `대조 일치: 서버 집계 ${section.total}건 = 받은 기록 ${section.total}건` : `대조 불일치: 서버 집계 ${sum}건 / total ${section.total} / 받은 기록 ${(section.records ?? []).length}건`);
+      return el('span', same ? `✓ 대조 일치: 서버 집계 ${section.total}건 = 받은 기록 ${section.total}건` : `✗ 대조 불일치: 서버 집계 ${sum}건 / total ${section.total} / 받은 기록 ${(section.records ?? []).length}건`, same ? 'check ok' : 'check bad');
     }
     function opsCard(title, section, body) {
       const card = el('div', null, 'ops-card');
-      const h = el('h3', title); h.append(el('span', STATUS_LABEL[section?.status] ?? '읽기 실패', `badge ${section?.status ?? 'error'}`));
-      card.append(h, el('p', `출처: ${section?.source ?? '—'}`));
+      const head = el('div', null, 'card-head');
+      head.append(el('h3', title), el('span', STATUS_LABEL[section?.status] ?? '읽기 실패', `badge ${section?.status ?? 'error'}`));
+      card.append(head, el('p', `출처: ${section?.source ?? '—'}`, 'source'));
       // 칸 자체가 없거나(앞 단계 읽기 실패) 읽기에 실패하면 내용을 그리지 않고 실패만 적습니다.
-      if (!section) card.append(el('p', '서버 응답에 이 칸이 없습니다(앞선 읽기 실패). 0건으로 표시하지 않습니다.'));
-      else if (section.status === 'error') card.append(el('p', `읽기 실패(${section.error}). 0건으로 표시하지 않습니다.`));
+      if (!section) card.append(el('p', '서버 응답에 이 칸이 없습니다(앞선 읽기 실패). 0건으로 표시하지 않습니다.', 'error'));
+      else if (section.status === 'error') card.append(el('p', `읽기 실패(${section.error}). 0건으로 표시하지 않습니다.`, 'error'));
       else body(card);
       const check = crossCheck(section); if (check) card.append(check);
       return card;
+    }
+    // 위쪽 숫자 타일: 실측 칸의 값만 쓰고, 읽지 못한 칸은 숫자 대신 '—'(읽기 실패)를 둡니다.
+    function tile(num, text, ok) {
+      const t = el('div', null, 'tile');
+      t.append(el('div', ok ? num : '—', `tile-num${ok ? '' : ' tone-bad'}`), el('div', ok ? text : `${text} · 읽기 실패`, 'tile-label'));
+      return t;
+    }
+    function clearOps(message) {
+      opsGrid.replaceChildren(); opsTiles.replaceChildren(); opsInfo.replaceChildren(); opsInfo.classList.add('hidden');
+      opsMeta.textContent = message;
     }
     async function loadOps() {
       if (!activeSession?.access_token) return;
       opsMeta.textContent = '서버 기록을 읽는 중입니다.';
       try {
         const response = await fetch('/api/ops', { cache: 'no-store', headers: { Authorization: `Bearer ${activeSession.access_token}` } });
-        if (response.status === 403) { opsGrid.replaceChildren(); opsMeta.textContent = '승인된 기기에서만 작전실을 엽니다.'; return; }
+        if (response.status === 403) { clearOps('승인된 기기에서만 작전실을 엽니다.'); return; }
         if (!response.ok) throw new Error(`작전실 API HTTP ${response.status}`);
         const d = await response.json();
-        opsMeta.textContent = `요청 ID ${d.requestId} · 확인 시각 ${d.checkedAt} · 배포 커밋 ${d.commit ?? '알 수 없음'}`;
+        opsMeta.textContent = `읽은 시각 ${fmtTime(d.checkedAt)} (한국 시각)`;
+        opsInfo.replaceChildren(
+          el('dt', '요청 ID'), el('dd', d.requestId),
+          el('dt', '확인 시각(UTC)'), el('dd', d.checkedAt),
+          el('dt', '배포 커밋'), el('dd', d.commit ?? '알 수 없음'),
+        );
+        opsInfo.classList.remove('hidden');
+        const rev = d.revocation, rec = d.recovery, aud = d.recovery?.audit;
+        const revOk = rev?.status === 'measured', recOk = rec?.status === 'measured', audOk = aud?.status === 'measured';
+        opsTiles.replaceChildren(
+          tile(d.decider?.ruleIds?.length ?? '—', '판정기 규칙(코드)', d.decider?.status === 'code'),
+          tile(revOk ? (rev.counts.approved ?? 0) : 0, '승인된 기기', revOk),
+          tile(revOk ? (rev.counts.revoked ?? 0) : 0, '회수된 기기', revOk),
+          tile(recOk ? rec.total : 0, '메모 사본', recOk),
+          tile(audOk ? aud.total : 0, '복원 기록', audOk),
+        );
         opsGrid.replaceChildren(
           opsCard('판정기 규칙', d.decider, c => {
-            c.append(el('p', `단계 ${d.decider.step} · 규칙 ${d.decider.ruleIds.length}개: ${d.decider.ruleIds.join(', ')}`));
-            c.append(el('p', `허용 경로 ${d.decider.allowedRoutes.length}개: ${d.decider.allowedRoutes.join(' / ')}`));
-            c.append(el('p', '코드의 설정값입니다. 실제 판정 결과는 심판·엔진 기록에 있고 이 화면에서 통과로 표시하지 않습니다.'));
+            c.append(el('p', `${d.decider.step}단계 설정 · 규칙 ${d.decider.ruleIds.length}개`));
+            const kv = el('div', null, 'kv'); d.decider.ruleIds.forEach(id => kv.append(el('span', id))); c.append(kv);
+            const routes = el('details'); routes.append(el('summary', `허용 경로 ${d.decider.allowedRoutes.length}개 보기`));
+            const ul = el('div', null, 'kv'); d.decider.allowedRoutes.forEach(r => ul.append(el('span', r))); routes.append(ul); c.append(routes);
+            c.append(el('p', '코드의 설정값입니다. 실제 판정 결과는 심판·엔진 기록에 있고 이 화면에서 통과로 표시하지 않습니다.', 'source'));
           }),
           opsCard('탐지 사건', d.detection, c => {
-            c.append(el('p', `규칙 ${d.detection.rule.id}: ${d.detection.rule.windowMinutes}분 안에 조회 ${d.detection.rule.limitOver}건을 넘으면 회수 제안`));
-            c.append(el('p', `사건 수: ${d.detection.events ?? '미실행'} · 회수 제안: ${d.detection.proposals ?? '미실행'}`));
-            c.append(el('p', d.detection.note));
+            c.append(el('p', `규칙 ${d.detection.rule.id}: ${d.detection.rule.windowMinutes}분 안에 조회가 ${d.detection.rule.limitOver}건을 넘으면 권한 회수를 제안`));
+            const kv = el('div', null, 'kv'); kv.append(el('span', `사건 수: ${d.detection.events ?? '미실행'}`), el('span', `회수 제안: ${d.detection.proposals ?? '미실행'}`)); c.append(kv);
+            c.append(el('p', d.detection.note, 'source'));
           }),
-          opsCard('회수 상태 (기기 승인)', d.revocation, c => {
-            c.append(el('p', `대기 ${d.revocation.counts.pending ?? 0} · 승인 ${d.revocation.counts.approved ?? 0} · 회수 ${d.revocation.counts.revoked ?? 0}`));
-            c.append(opsTable(['승인 코드(가림)', '상태', '요청 시각', '승인 시각'], d.revocation.records.map(r => [r.code, r.status, r.createdAt, r.approvedAt])));
+          opsCard('회수 상태 (기기 승인)', rev, c => {
+            c.append(pills(rev.counts));
+            c.append(recordsBox(rev.total, opsTable(['승인 코드(가림)', '상태', '요청 시각', '승인 시각'], rev.records.map(r => [r.code, label(r.status), r.createdAt, r.approvedAt]), [2, 3])));
           }),
-          opsCard('복구 버전', d.recovery, c => {
-            c.append(el('p', `메모 ${d.recovery.notes}건의 사본 ${d.recovery.total}개 · ${Object.entries(d.recovery.counts).map(([k, v]) => `${k} ${v}`).join(' · ') || '없음'}`));
-            c.append(opsTable(['버전', '메모(가림)', '종류', '시각'], d.recovery.records.map(r => [r.versionId, r.note, r.op, r.capturedAt])));
+          opsCard('복구 버전', rec, c => {
+            c.append(el('p', `메모 ${rec.notes}건 · 사본 ${rec.total}개`));
+            c.append(pills(rec.counts));
+            c.append(recordsBox(rec.total, opsTable(['버전', '메모(가림)', '종류', '시각'], rec.records.map(r => [r.versionId, r.note, label(r.op), r.capturedAt]), [3])));
           }),
-          opsCard('복원 감사 기록', d.recovery?.audit, c => {
-            c.append(el('p', `복원 ${d.recovery.audit.total}건 · ${Object.entries(d.recovery.audit.counts).map(([k, v]) => `${k} ${v}`).join(' · ') || '없음'}`));
-            c.append(opsTable(['메모(가림)', '버전', '결과', '시각'], d.recovery.audit.records.map(r => [r.note, r.versionId, r.outcome, r.at])));
+          opsCard('복원 감사 기록', aud, c => {
+            c.append(pills(aud.counts));
+            c.append(recordsBox(aud.total, opsTable(['메모(가림)', '버전', '결과', '시각'], aud.records.map(r => [r.note, r.versionId, label(r.outcome), r.at]), [3])));
           }),
         );
       } catch (error) {
-        opsGrid.replaceChildren();
-        opsMeta.textContent = `${error.message} — 화면에 성공으로 표시하지 않습니다.`;
+        clearOps(`${error.message} — 화면에 성공으로 표시하지 않습니다.`);
       }
     }
     document.querySelector('#ops-refresh-button').addEventListener('click', loadOps);
@@ -218,7 +334,7 @@
     function lockNotes(message) {
       deviceApproved = false;
       opsPanel.classList.add('hidden');
-      opsGrid.replaceChildren();
+      opsGrid.replaceChildren(); opsTiles.replaceChildren(); opsInfo.classList.add('hidden');
       noteEditor.classList.add('hidden');
       resetEditor();
       const item = document.createElement('li');
@@ -230,6 +346,8 @@
       const status = result?.status ?? 'none';
       deviceCodeWrap.classList.add('hidden');
       deviceRequestButton.classList.add('hidden');
+      setChip('#device-chip', { approved: '승인됨', pending: '승인 대기', revoked: '승인 취소(회수)' }[status] ?? '미등록 기기',
+        status === 'approved' ? 'ok' : status === 'pending' ? 'warn' : 'bad');
       if (status === 'approved') {
         deviceStatus.textContent = '이 기기는 서버가 승인한 등록 기기입니다.';
         deviceStatus.className = 'success';
@@ -317,9 +435,11 @@
           content.textContent = note.body ?? note.content;
           actions.className = 'note-actions';
           editButton.type = 'button';
+          editButton.className = 'secondary';
           editButton.textContent = '수정';
           deleteButton.type = 'button';
           deleteButton.textContent = '삭제';
+          deleteButton.className = 'danger';
           editButton.addEventListener('click', () => startEdit(note));
           deleteButton.addEventListener('click', () => deleteNote(note.id));
           actions.append(editButton, deleteButton);
@@ -390,6 +510,8 @@
           loggedIn.classList.remove('hidden');
           userEmail.textContent = `로그인됨: ${currentSession.user.email || currentSession.user.id}`;
           showAuthStatus('로그인 상태입니다.', 'success');
+          setChip('#login-chip', '로그인됨', 'ok');
+          setChip('#device-chip', '서버에 확인 중', 'muted');
           lockNotes('기기 승인 상태를 확인하는 중입니다.');
           refreshDevice('GET');
         } else {
@@ -404,6 +526,8 @@
           userEmail.textContent = '';
           list.replaceChildren();
           showAuthStatus('로그아웃 상태입니다.');
+          setChip('#login-chip', '로그인 전', 'muted');
+          setChip('#device-chip', '로그인 후 확인', 'muted');
         }
       };
       renderSession(session);
