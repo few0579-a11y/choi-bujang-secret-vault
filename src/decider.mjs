@@ -60,9 +60,10 @@ function anomalyReasons(request) {
 // - 반 공지(notices): 읽기(GET)만 허용. 쓰기는 누구에게나 거부. 강사 수정은 서버 관리 경로에서 처리.
 // - 강사 자료(materials)와 알 수 없는 서비스·경로: 모두 거부.
 // 쿼리 문자열로 기능을 고르지 않으며, 메모 ID 형식(UUID 여부)은 좁히지 않습니다.
+// 10단계: 메모 한 건 복원(POST /notes/:id/restore)만 추가로 허용합니다. 주인 확인과 해시 대조는 API·DB에서 합니다.
 const ONE_SEGMENT = '[^/?#]+';
 const ZONE_RULES = Object.freeze([
-  { service: 'notes', routes: ['GET /notes/:id', 'PUT /notes/:id', 'DELETE /notes/:id'] },
+  { service: 'notes', routes: ['GET /notes/:id', 'PUT /notes/:id', 'DELETE /notes/:id', 'POST /notes/:id/restore'] },
   { service: 'notices', routes: ['GET /notices', 'GET /notices/:id'] },
 ]);
 

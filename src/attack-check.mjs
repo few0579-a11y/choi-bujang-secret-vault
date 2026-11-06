@@ -1,6 +1,6 @@
 // 자체 점검: 실제 배포 주소에 요청하고 결과만 기록합니다.
 export async function runAttackChecks(config) {
-  if (![4, 5, 6, 7, 8, 9].includes(config.step)) throw new Error('현재 점검은 4~9단계 전용입니다.');
+  if (![4, 5, 6, 7, 8, 9, 10].includes(config.step)) throw new Error('현재 점검은 4~10단계 전용입니다.');
   let app;
   try { app = new URL(config.publicAppUrl); } catch { throw new Error('실제 Vercel 배포 URL을 설정하세요.'); }
   if (app.protocol !== 'https:' || app.hostname.endsWith('.example') || app.pathname !== '/') {
@@ -45,6 +45,14 @@ export async function runAttackChecks(config) {
     noticeWriteStatus = (await put('/api/notices/8a8a8a8a-0000-4000-8000-000000000001')).status;
     adminWriteStatus = (await put('/api/admin/notices/8a8a8a8a-0000-4000-8000-000000000001')).status;
   }
+  // 10단계: 로그인 없이 복구 경로를 부르면 자료 없이 거부되는지 확인합니다.
+  let restoreAnonStatus = 0;
+  if (config.step >= 10) {
+    restoreAnonStatus = (await fetch(new URL('/api/notes/10b00000-0000-4000-8000-000000000001/restore', app), {
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}',
+      redirect: 'error', signal: AbortSignal.timeout(10000),
+    })).status;
+  }
   const homeResponse = await get('/');
   const identityResponse = await get('/aleph.json');
   return [
@@ -55,6 +63,9 @@ export async function runAttackChecks(config) {
     ...(config.step >= 8 ? [
       { attackId: 'notice_write_direct_api', expected: '반 공지 직접 PUT 401 또는 403', observed: `공지 PUT HTTP ${noticeWriteStatus}` },
       { attackId: 'admin_notice_body_role', expected: '본문 role 주장으로 강사 관리 경로 PUT 401 또는 403', observed: `관리 경로 PUT HTTP ${adminWriteStatus}` },
+    ] : []),
+    ...(config.step >= 10 ? [
+      { attackId: 'restore_route_anonymous', expected: '무토큰 복구 POST 401', observed: `복구 POST HTTP ${restoreAnonStatus}` },
     ] : []),
     { attackId: 'security_header', expected: '첫 화면에 X-Content-Type-Options: nosniff', observed: `첫 화면 HTTP ${homeResponse.status}, 헤더 ${homeResponse.headers.get('x-content-type-options') || '없음'}` },
   ];

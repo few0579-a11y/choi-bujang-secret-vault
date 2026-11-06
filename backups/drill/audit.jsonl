@@ -1,0 +1,2 @@
+{"at":"2026-11-06T01:34:02.784Z","action":"drill_tamper","baseVersion":"v1","file":"src/decider.mjs","meaning":"메모 구역에 전체 목록 경로를 허용 → 다른 사람 메모까지 쓸어 담을 수 있음"}
+{"at":"2026-11-06T01:34:03.327Z","action":"restore","toVersion":"v1","files":["src/decider.mjs"],"lines":1}

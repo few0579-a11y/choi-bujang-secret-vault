@@ -1,0 +1,8 @@
+{
+  "baseVersion": "v1",
+  "baseCommit": "642c8b327c6b20d4fb0084000d2e610d380984e4",
+  "tamper": {
+    "file": "src/decider.mjs",
+    "meaning": "메모 구역에 전체 목록 경로를 허용 → 다른 사람 메모까지 쓸어 담을 수 있음"
+  }
+}

@@ -11,7 +11,13 @@
     "detect:test": "node scripts/detect-test.mjs",
     "fixture:7": "node scripts/fixture-7.mjs",
     "fixture:8": "node scripts/fixture-8.mjs",
-    "xdr:run": "node scripts/xdr-run.mjs"
+    "xdr:run": "node scripts/xdr-run.mjs",
+    "policy:snapshot": "node scripts/policy-backup.mjs snapshot",
+    "policy:verify": "node scripts/policy-backup.mjs verify",
+    "policy:drill": "node scripts/policy-backup.mjs drill",
+    "policy:diff": "node scripts/policy-backup.mjs diff",
+    "policy:restore": "node scripts/policy-backup.mjs restore",
+    "policy:check": "node scripts/policy-backup.mjs check"
   },
   "engines": {
     "node": ">=22"

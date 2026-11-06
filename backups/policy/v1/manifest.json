@@ -1,0 +1,34 @@
+{
+  "schema": "byteback.policy-snapshot.v1",
+  "version": "v1",
+  "sourceCommit": "642c8b327c6b20d4fb0084000d2e610d380984e4",
+  "createdAt": "2026-11-06T01:34:02.493Z",
+  "note": "1~9단계 안전 정책(판정기 규칙·허용 경로·DB 접근 정책)",
+  "files": [
+    {
+      "path": "src/decider.mjs",
+      "sha256": "1cbd9d724fd941ec3379dba160249013564b1c46ed2510a714ffdf1699264c18",
+      "lines": 113
+    },
+    {
+      "path": "aleph.config.json",
+      "sha256": "dd45ec2bdfc3e3b929a78f1a3096f6c6bd138b779af34468a6cde9ecdd750686",
+      "lines": 15
+    },
+    {
+      "path": "supabase_notes.sql",
+      "sha256": "9bf5f1672769ad0b699d2fede3d8d352c38e0becbbcb8d2fd374ba7f6369a0a0",
+      "lines": 10
+    },
+    {
+      "path": "supabase_stage4_notes.sql",
+      "sha256": "30f4bceb359789569e47aa549a4bb4e29eeaf900deefd93bc50ffd3f5522997f",
+      "lines": 123
+    },
+    {
+      "path": "supabase_stage8_zones.sql",
+      "sha256": "359db9d29ee21f29f84033229d7ed5c24e1b7c66608df62a6ff83f8bac8504c4",
+      "lines": 39
+    }
+  ]
+}

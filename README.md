@@ -1,4 +1,4 @@
-# BYTE BACK 방어전 — 1~9단계 구현 기록
+# BYTE BACK 방어전 — 1~10단계 구현 기록
 
 1~3단계의 인증·CRUD 구조에 사용자별 소유자 검사와 DB RLS 재현 자료를 추가했습니다.
 
@@ -55,6 +55,56 @@
 - **응답 (제작 3):** 의심이면 `{action:"propose_revocation", reasonCode:"burst_read", subject}` 세 키만, 아니면 `{action:"observe"}`입니다. 회수 집행·기기 권한 변경은 하지 않으며 `src/decider.mjs` 응답 형식은 그대로입니다.
 - 테스트 명령: `npm.cmd run detect:test` (가상 사건 연습 6건, 심판 판정이 아닙니다). `src/attack-check.mjs`는 9단계에서도 8단계 점검을 그대로 실행합니다.
 - **미검증:** 운영 반 엔진이 검증된 사건을 `detect`에 전달하는 경로와, 회수 제안을 실제 접속 회수로 집행하는 경로는 이 저장소에서 연결·시험하지 않았습니다.
+
+## 10단계 백업에서 자료실을 되살립니다
+
+### 제작 1·2 — 안전 정책 사본과 시험 정책 되돌리기 (`scripts/policy-backup.mjs`)
+
+- **안전 정책:** `src/decider.mjs`(판정기 규칙), `aleph.config.json`(allowedRoutes), DB 접근 정책 SQL(`supabase_notes.sql`, `supabase_stage4_notes.sql`, `supabase_stage8_zones.sql`).
+- **검증 사본:** `backups/policy/v1/` — 9단계 저장점 `642c8b3`의 파일을 그대로 떠 두고 `manifest.json`에 파일별 SHA-256을 적었습니다(줄바꿈 CRLF/LF 차이는 같은 내용으로 봄). 사본이 없거나 해시가 하나라도 다르면 모든 명령이 중단됩니다.
+- **시험 정책:** `backups/drill/policy/` — 검증 사본을 복사한 뒤 메모 구역 규칙 한 줄에 `GET /notes`(전체 목록)를 끼워 넣어 침공을 흉내 냅니다. 실제 운영 정책 파일에는 쓰지 않습니다(쓰기 위치를 `backups/` 아래로 제한).
+- **되돌리기:** 실행 전에 복원할 버전과 바뀔 줄(파일:줄, 지금 → 복원)을 보여 주고, `--yes`가 있을 때만 차이 난 줄만 바꿉니다. 다른 줄(다른 서비스 규칙)은 그대로이며 `backups/drill/audit.jsonl` 감사 기록은 추가만 합니다.
+
+| 명령 | 하는 일 |
+|---|---|
+| `npm.cmd run policy:verify` | 사본을 다시 읽어 해시 대조 |
+| `npm.cmd run policy:drill` | 시험 정책 만들기 + 규칙 한 줄 변조 + 차이 표시 |
+| `npm.cmd run policy:diff` | 검증 사본 대비 시험 정책 차이만 표시 |
+| `npm.cmd run policy:restore` | 바뀔 항목만 보여 주고 멈춤 (`-- --yes`로 실행) |
+| `npm.cmd run policy:check` | 시험 정책 판정기에 가상 요청 4건(B의 목록 요청·내보내기 요청 거부, A의 단건 읽기·수정 허용) |
+
+- 실행 결과(2026-11-06, 로컬): 변조 상태에서 `B가 목록 경로로 A 메모까지 요청`이 `allow`(확인 필요) → 복원 후 `deny/zone_not_allowed`, A 정상 요청 2건은 변조 전후 모두 `allow`. 사본 파일 한 줄을 일부러 바꾸자 `해시가 맞지 않습니다. 중단합니다.`로 멈춤을 확인했습니다. 가상 요청 연습이며 심판 판정이 아닙니다.
+- 실제 Supabase DB의 정책 상태를 사본 SQL과 대조하는 일은 **미실행**입니다(이 저장소에서 DB에 접속하지 않음).
+
+### 제작 3 — 메모 한 건 복원 경로
+
+- **서비스·경로:** 메모(`notes`) 서비스, `POST /api/notes/:id/restore` (`api/notes/[id]/restore.js`). `aleph.config.json`의 `restoreRoute`와 `allowedRoutes`에 적었고, 판정기 메모 구역에 `POST /notes/:id/restore`만 추가했습니다(ID 없는 전체 복원·GET은 거부).
+- **복원 대상(시험 계정 B의 가상 메모):** `10b00000-0000-4000-8000-000000000001` (제목 「가상 메모 B-10 (복구 시험용)」, 실제 정보 없음). `supabase_stage10_restore.sql` 끝의 주석 SQL로 B 계정 소유로 만듭니다(이메일은 SQL Editor에서만 입력).
+- **비공개 사본:** DB `public.note_versions`. 트리거가 메모 저장·수정·삭제 때마다 그 시점 내용과 내용 해시를 한 줄씩 쌓습니다(덮어쓰지 않음, 내용이 같은 수정은 쌓지 않음). SQL 적용 시점의 기존 메모는 `baseline`으로 한 번 떠 둡니다. anon·authenticated는 읽기·쓰기 모두 불가.
+- **복원 규칙 (결정: 수정마다 버전 기록):** 메모가 있으면 마지막 수정 직전 버전으로, 지워졌으면 삭제 직전 버전으로 되돌립니다. DB 함수 `restore_note_version`이 ① 메모 ID ② 소유자(검증된 로그인 사용자 = 사본의 `owner_id`) ③ 사본 내용 해시를 다시 계산해 대조하고, 복원 후 실제 행의 해시가 사본과 같은지 한 번 더 확인합니다. 하나라도 다르면 바꾸지 않고 멈춥니다.
+- **응답:** `200 {id, resourceId, outcome(restored|undeleted|no_change), versionId, ownerMatches, contentSha256}` / 무토큰 `401` / 다른 사람 메모 `403 not_owner` / 사본 없음 `404 SNAPSHOT_NOT_FOUND` / 해시 불일치 `409 RESTORE_STOPPED` / 본문 `role`·`owner_id` 주장 `400`. 본문의 다른 값은 읽지 않습니다.
+- **보존:** 한 건만 바꾸며 다른 메모·`note_versions`·`note_restore_audit`(복원 감사 기록: 메모 ID·버전·결과·전후 해시, 본문 없음)는 지우지 않습니다.
+- 로컬 확인(2026-11-06): PGlite(PostgreSQL 17)에 SQL을 두 번 적용해 변조→복원, 삭제→복원, 다른 사람 복원 거부(`not_owner`), 사본 변조 시 중단(`snapshot_hash_mismatch`), 없는 메모(`no_snapshot`), anon·authenticated 권한 없음을 확인했습니다. 실제 Supabase 적용과 배포 경로 호출은 **미실행**입니다.
+
+### 제작 4 — 복구 뒤 다시 실행할 순서
+
+복구 후 아래를 위에서부터 실행합니다. 결과 칸은 실제로 실행한 것만 채우고 나머지는 미실행으로 둡니다.
+
+| # | 단계 | 요청 | 기대 | 결과 |
+|---|---|---|---|---|
+| 1 | 10 | B 로그인 → `POST /api/notes/10b00000-…0001/restore` 뒤 `GET /api/notes/10b00000-…0001` | 200, 내용 해시 = 사본 | 미실행 |
+| 2 | 10 | 무토큰 `POST /api/notes/:id/restore` | 401 | `npm run bundle` 자기 점검에서 확인 |
+| 3 | 10 | A 로그인으로 B 메모 복원 | 403 not_owner | 미실행 |
+| 4 | 1·5 | `/data.json`, 원본 Data API anon GET | 404 또는 0건 / 거부 | `npm run bundle` 자기 점검 |
+| 5 | 3 | 무토큰 `GET`·`POST /api/notes` | 401 | `npm run bundle` 자기 점검 |
+| 6 | 4·8 | B가 A 메모 `GET/PUT/DELETE /api/notes/:id` | 403 not_owner | 미실행 |
+| 7 | 4 | A가 자기 메모 읽기·수정 | 200 | 미실행 |
+| 8 | 8 | 반 공지 직접 PUT, 본문 role로 강사 경로 PUT | 401 또는 403 | `npm run bundle` 자기 점검 |
+| 9 | 6·7·8 | `npm.cmd run decider:test`, `fixture:7`, `fixture:8` | 모두 통과 | 2026-11-06 로컬 통과 (가상 요청) |
+| 10 | 9 | `npm.cmd run detect:test` | 6건 통과 | 2026-11-06 로컬 통과 (가상 사건) |
+| 11 | 10 | `npm.cmd run policy:verify`, `policy:check` | 해시 일치, 4건 통과 | 2026-11-06 로컬 통과 |
+
+- 심판의 실제 공격 결과는 이 표에 적지 않습니다.
 
 ## 현재 구조
 
