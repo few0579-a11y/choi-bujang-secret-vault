@@ -12,6 +12,7 @@
     "api/notes/[id]/restore.js",
     "api/notices.js",
     "api/notices/[id].js",
+    "api/ops.js",
     "api/threat-intel.js"
   ]
 }

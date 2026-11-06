@@ -1,4 +1,4 @@
-# BYTE BACK 방어전 — 1~11단계 구현 기록
+# BYTE BACK 방어전 — 1~12단계 구현 기록
 
 1~3단계의 인증·CRUD 구조에 사용자별 소유자 검사와 DB RLS 재현 자료를 추가했습니다.
 
@@ -118,6 +118,44 @@
 - **판정기 `request_integrity` 규칙:** 계약 18개 이름 밖의 이름이 끼었거나, `deviceId`가 16자리 16진수가 아니거나, 경로에 `../`·`//`·인코딩된 `/`·`\`가 있거나, 쿼리가 비었다면서 지문이 빈 문자열 지문이 아니면 `deny / request_integrity_failed`. 기존 구역 규칙의 경로-route 대조와 함께 "서명 뒤 경로 변경"을 거부합니다. 서명 검증과 본문 대조 자체는 엔진(릴레이) 몫이며 계약에 본문 지문이 없어 판정기는 본문을 보지 않습니다.
 - 테스트 명령: `npm.cmd run fixture:11`(10건), `npm.cmd run fixture:8`, `npm.cmd run decider:test` — 모두 가상 요청 연습이며 심판 판정이 아닙니다.
 - **미실행:** Supabase에 `supabase_stage11_devices.sql` 적용 전에는 배포에서 기기 승인 흐름이 동작하지 않습니다(`DEVICE_STATUS_UNAVAILABLE`). 배포에서 승인 전 자료 없음·승인 후 기존 화면 정상은 학생이 직접 확인한 뒤에만 기록합니다.
+
+## 12단계 탈환 작전실 · 회귀 시험 표 · 운영 안내
+
+### 제작 1 — 탈환 작전실 (`api/ops.js` + 첫 화면 「탈환 작전실」 칸)
+- 로그인 + **서버가 승인한 기기**에서만 열립니다(무토큰 `401`, 미승인 기기 `403 DEVICE_NOT_APPROVED`). 내 계정의 기록만 읽습니다.
+- 칸 다섯 개와 표시: 판정기 규칙 `코드`(배포된 `RULE_IDS`·허용 경로, 실행 결과 아님) · 탐지 사건 `미실행`(규칙은 있으나 운영 엔진이 실제 사건을 넘기는 경로가 없음 → "0건"으로 쓰지 않음) · 회수 상태 `실측`(`device_approvals`의 대기·승인·회수) · 복구 버전 `실측`(`note_versions`) · 복원 감사 `실측`(`note_restore_audit`).
+- 가리기: 메모 ID는 앞 8자리, 승인 코드는 앞 2자리만. 메모 제목·본문·기기 지문·토큰은 API가 고르지도 않습니다.
+- 대조: 화면이 서버가 보낸 기록을 다시 세어 「서버 집계 N건 = 받은 기록 N건」을 표시하고, 다르면 「대조 불일치」를 띄웁니다. 화면 스스로 성공 문구를 만들지 않으며, API 실패 시 칸을 비우고 실패를 적습니다. 요청 ID(`x-vercel-id`)·확인 시각·배포 커밋을 함께 보여 줍니다.
+
+### 제작 2 — 1~12단계 회귀 시험 표 (`npm.cmd run ops:regress`)
+- 실제 배포 주소에 정상·금지 요청 20건을 보내 `ops/regression-latest.md`(표)·`.json`에 단계·구분·기대·실제 HTTP 결과·요청 ID·확인 시각(UTC)을 남깁니다.
+- A·B 계정 로그인은 선택입니다. 실행하면 이메일·비밀번호를 묻고(비밀번호는 화면에 안 보임), 토큰은 메모리에만 둡니다. 건너뛴 계정의 요청은 `미실행`.
+- 메모를 바꾸는 요청(수정·삭제·내 메모 복원), 판정기·탐지 API 경로(엔진 몫), **심판 총공세 41종은 보내지 않고 `미실행`으로 적습니다.** 6~11단계 로컬 가상 연습(decider·fixture·detect·policy:verify)은 별도 칸에 "실제 API 아님"으로 적습니다.
+- 기대와 다른 결과가 하나라도 있으면 종료 코드 1. 이 표는 학생 자기 점검이며 심판 판정이 아닙니다.
+
+### 제작 3 — 설치·실행·중지·복구 안내
+검사 기준: 이 README가 포함된 커밋(`git log -1 --oneline`, 12단계 저장점). 출처 구분은 아래와 같습니다.
+
+| 부분 | 만든 쪽 | 파일 |
+|---|---|---|
+| SDP 엔진(신원·기기 서명 확인, 릴레이, 판정기 호출, 사건 전달, 회수 집행) | **ALEPH SDP 엔진 사용(제공)** — 이 저장소에 없음 | `docs/DECIDER_REQUEST.md`·`docs/DETECT_EVENTS.md` 계약만 |
+| 시작 틀(제출 묶음·검증 도우미·XDR 실행기) | ALEPH 제공 | `scripts/bundle.mjs`, `src/verify-login.mjs`, `scripts/xdr-run.mjs` |
+| 학생 판정기 | 학생 | `src/decider.mjs`(규칙 4개), `src/zones.mjs` |
+| 탐지 규칙 | 학생 | `src/detect.mjs`(10분 120건 초과 → 회수 제안만) |
+| 접속 앱 | 학생 | `public/`(설치형 웹앱·기기 승인·작전실 화면), `api/device.js` |
+| 자료실 | 학생 | `api/notes*`, `api/notices*`, `api/admin/`, `api/ops.js`, `supabase_*.sql`, `scripts/policy-backup.mjs`, `scripts/regression.mjs` |
+
+1. **설치**: Node 22 이상 → `npm install`(의존성 `@supabase/supabase-js`, `jose` 두 개). Supabase SQL Editor에서 `supabase_notes.sql` → `supabase_stage4_notes.sql` → `supabase_stage8_zones.sql` → `supabase_stage10_restore.sql` → `supabase_stage11_devices.sql` 순서로 실행(각 파일 아래쪽 확인용 SELECT로 결과 확인).
+2. **비밀값**: Vercel Settings → Environment Variables에 `SUPABASE_URL`, `SUPABASE_SECRET_KEY`만 직접 입력합니다. 저장소·제출 묶음·채팅에 넣지 않습니다(`.env*`, `bundle-notes.json`, `artifacts/`는 `.gitignore`).
+3. **실행**: GitHub `main`에 push → Vercel이 `npm run build`로 배포. 로컬 점검: `npm.cmd run decider:test` · `fixture:7` · `fixture:8` · `fixture:11` · `detect:test` · `policy:verify` → 배포 뒤 `npm.cmd run ops:regress`.
+4. **기기 승인·회수(접속 앱)**: 승인 = `supabase_stage11_devices.sql` 아래 주석의 `update … set status = 'approved'`, 회수 = 같은 파일의 `set status = 'revoked'`. 회수하면 그 기기에서 목록·작전실이 즉시 403.
+5. **중지**: 자료실 전체는 Vercel Deployments 화면에서 직전 정상 배포로 Instant Rollback(또는 `SUPABASE_SECRET_KEY`를 지워 모든 자료 API를 `503`으로 닫음). 판정기만 멈출 때는 `decide()`가 모든 요청을 `deny`하는 시작 틀 상태로 되돌립니다(엔진은 판정기 실패·지연 시에도 허용하지 않음 = 닫힌 쪽으로 실패).
+6. **복구**: 정책은 `npm.cmd run policy:verify` → `policy:diff` → `policy:restore`(해시가 맞는 사본에서 바뀐 줄만), 메모는 로그인 후 `POST /api/notes/:id/restore`(한 건만). 복구 뒤 `npm.cmd run ops:regress`로 1~12단계 요청을 다시 보내 표를 갱신합니다.
+7. **코드 되돌리기**: `git status`·`git diff`로 범위를 확인한 뒤 `git restore --source <직전 저장점> -- <파일>`. `git reset --hard`는 쓰지 않습니다.
+
+### 12단계 미실행
+- 작전실 화면의 실제 배포 확인과 `ops:regress` 실측은 이 커밋을 push·배포한 뒤 학생이 실행합니다. 실행 전에는 `ops/` 표가 없거나 이전 결과입니다.
+- 회수된 신원·미등록 기기의 재전송 차단은 엔진(기기 서명·신원 확인)과 판정기 `device_registered`·`request_integrity` 규칙에 의존하며, 판정기 계약에 "회수됨" 값이 없어 판정기에 새 규칙을 더하지 않았습니다.
 
 ## 현재 구조
 
