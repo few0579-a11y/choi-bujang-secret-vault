@@ -17,7 +17,8 @@ export async function runAttackChecks(config) {
   // 같은 attackId를 요청 헤더(x-request-id, x-aleph-attack-id)로 보내고 기록에도 적습니다. 응답 내용·토큰은 기록하지 않습니다.
   const sent = async (attackId, expected, url, headers = {}) => {
     const target = new URL(url);
-    const response = await fetch(target, {
+    // 주소는 URL 객체가 아니라 문자열로 넘깁니다(요청 기록 도구가 주소를 그대로 읽을 수 있게).
+    const response = await fetch(target.href, {
       method: 'GET', headers: { ...headers, 'x-request-id': attackId, 'x-aleph-attack-id': attackId },
       redirect: 'error', signal: AbortSignal.timeout(10000),
     });
