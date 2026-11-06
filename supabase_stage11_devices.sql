@@ -13,10 +13,15 @@ create table if not exists public.device_approvals (
 );
 
 alter table public.device_approvals enable row level security;
-revoke all on table public.device_approvals from anon, authenticated;
+revoke all on table public.device_approvals from public, anon, authenticated;
+-- 서버(secret key = service_role)만 읽고 쓰게 합니다. 이 프로젝트는 새 표에 서버 권한이 자동으로 붙지 않았습니다.
+grant select, insert, update on table public.device_approvals to service_role;
 
--- 확인: 표가 생기고 RLS가 켜졌는지
+-- 확인 1: 표가 생기고 RLS가 켜졌는지 (relrowsecurity = true)
 select relname, relrowsecurity from pg_class where relname = 'device_approvals';
+-- 확인 2: 권한 (service_role만 SELECT·INSERT·UPDATE, anon·authenticated 줄은 없어야 함) — 따로 실행
+-- select grantee, string_agg(privilege_type, ', ' order by privilege_type) from information_schema.role_table_grants
+--   where table_schema = 'public' and table_name = 'device_approvals' group by grantee;
 
 -- ───────── 아래는 승인할 때마다 따로 실행합니다(지금 같이 실행하지 마세요) ─────────
 -- 1) 대기 중인 기기 보기
