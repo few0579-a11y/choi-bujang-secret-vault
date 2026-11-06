@@ -166,9 +166,11 @@
     }
     function opsCard(title, section, body) {
       const card = el('div', null, 'ops-card');
-      const h = el('h3', title); h.append(el('span', STATUS_LABEL[section?.status] ?? '알 수 없음', `badge ${section?.status ?? 'error'}`));
+      const h = el('h3', title); h.append(el('span', STATUS_LABEL[section?.status] ?? '읽기 실패', `badge ${section?.status ?? 'error'}`));
       card.append(h, el('p', `출처: ${section?.source ?? '—'}`));
-      if (section?.status === 'error') card.append(el('p', `읽기 실패(${section.error}). 0건으로 표시하지 않습니다.`));
+      // 칸 자체가 없거나(앞 단계 읽기 실패) 읽기에 실패하면 내용을 그리지 않고 실패만 적습니다.
+      if (!section) card.append(el('p', '서버 응답에 이 칸이 없습니다(앞선 읽기 실패). 0건으로 표시하지 않습니다.'));
+      else if (section.status === 'error') card.append(el('p', `읽기 실패(${section.error}). 0건으로 표시하지 않습니다.`));
       else body(card);
       const check = crossCheck(section); if (check) card.append(check);
       return card;

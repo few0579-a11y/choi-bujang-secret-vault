@@ -145,7 +145,7 @@
 | 접속 앱 | 학생 | `public/`(설치형 웹앱·기기 승인·작전실 화면), `api/device.js` |
 | 자료실 | 학생 | `api/notes*`, `api/notices*`, `api/admin/`, `api/ops.js`, `supabase_*.sql`, `scripts/policy-backup.mjs`, `scripts/regression.mjs` |
 
-1. **설치**: Node 22 이상 → `npm install`(의존성 `@supabase/supabase-js`, `jose` 두 개). Supabase SQL Editor에서 `supabase_notes.sql` → `supabase_stage4_notes.sql` → `supabase_stage8_zones.sql` → `supabase_stage10_restore.sql` → `supabase_stage11_devices.sql` 순서로 실행(각 파일 아래쪽 확인용 SELECT로 결과 확인).
+1. **설치**: Node 22 이상 → `npm install`(의존성 `@supabase/supabase-js`, `jose` 두 개). Supabase SQL Editor에서 `supabase_notes.sql` → `supabase_stage4_notes.sql` → `supabase_stage8_zones.sql` → `supabase_stage10_restore.sql` → `supabase_stage11_devices.sql` → `supabase_stage12_ops.sql`(작전실 읽기 권한) 순서로 실행(각 파일 아래쪽 확인용 SELECT로 결과 확인).
 2. **비밀값**: Vercel Settings → Environment Variables에 `SUPABASE_URL`, `SUPABASE_SECRET_KEY`만 직접 입력합니다. 저장소·제출 묶음·채팅에 넣지 않습니다(`.env*`, `bundle-notes.json`, `artifacts/`는 `.gitignore`).
 3. **실행**: GitHub `main`에 push → Vercel이 `npm run build`로 배포. 로컬 점검: `npm.cmd run decider:test` · `fixture:7` · `fixture:8` · `fixture:11` · `detect:test` · `policy:verify` → 배포 뒤 `npm.cmd run ops:regress`.
 4. **기기 승인·회수(접속 앱)**: 승인 = `supabase_stage11_devices.sql` 아래 주석의 `update … set status = 'approved'`, 회수 = 같은 파일의 `set status = 'revoked'`. 회수하면 그 기기에서 목록·작전실이 즉시 403.
