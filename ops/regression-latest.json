@@ -1,7 +1,7 @@
 {
   "schema": "aleph.regression.v1",
   "target": "https://choi-bujang-secret-vault-lyart.vercel.app",
-  "commit": "37d3eed",
+  "commit": "819fba0",
   "summary": {
     "sent": 20,
     "same": 20,
@@ -16,8 +16,8 @@
       "expected": "200 + nosniff 헤더",
       "actual": "HTTP 200",
       "verdict": "기대와 같음",
-      "requestId": "icn1::jbmhd-1793936469396-3f16b526d0ad",
-      "at": "2026-11-06T03:41:08.937Z"
+      "requestId": "icn1::jlkcc-1793936640427-46be78e83a4e",
+      "at": "2026-11-06T03:44:00.329Z"
     },
     {
       "stage": "1",
@@ -26,8 +26,8 @@
       "expected": "200",
       "actual": "HTTP 200",
       "verdict": "기대와 같음",
-      "requestId": "icn1::sdfkx-1793936469432-284062d0d346",
-      "at": "2026-11-06T03:41:08.976Z"
+      "requestId": "icn1::xcnzg-1793936640810-874065b27d1b",
+      "at": "2026-11-06T03:44:00.355Z"
     },
     {
       "stage": "1",
@@ -36,8 +36,8 @@
       "expected": "404 또는 메모 0건",
       "actual": "HTTP 404",
       "verdict": "기대와 같음",
-      "requestId": "icn1::rvx8c-1793936469459-2d6bef4a2803",
-      "at": "2026-11-06T03:41:08.994Z"
+      "requestId": "icn1::wmxjs-1793936640831-f2958c1f555d",
+      "at": "2026-11-06T03:44:00.376Z"
     },
     {
       "stage": "5",
@@ -46,8 +46,8 @@
       "expected": "401·403·404 또는 0건",
       "actual": "HTTP 401",
       "verdict": "기대와 같음",
-      "requestId": "01a1aef2-2dec-7fe0-968c-587ecbb6a9b2",
-      "at": "2026-11-06T03:41:09.650Z"
+      "requestId": "01a1aef4-cb5c-7e55-9136-beddf0ac9d91",
+      "at": "2026-11-06T03:44:00.889Z"
     },
     {
       "stage": "3",
@@ -56,8 +56,8 @@
       "expected": "401",
       "actual": "HTTP 401 UNAUTHORIZED",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::frwk7-1793936470146-ae6ccdc7c07d",
-      "at": "2026-11-06T03:41:09.891Z"
+      "requestId": "icn1::iad1::jbmhd-1793936641371-e151f4b76431",
+      "at": "2026-11-06T03:44:01.114Z"
     },
     {
       "stage": "3",
@@ -66,8 +66,8 @@
       "expected": "401",
       "actual": "HTTP 401 UNAUTHORIZED",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::c69ns-1793936470387-3b6aebfae266",
-      "at": "2026-11-06T03:41:10.118Z"
+      "requestId": "icn1::iad1::jbmhd-1793936641591-9eeb8539497a",
+      "at": "2026-11-06T03:44:01.329Z"
     },
     {
       "stage": "3",
@@ -76,8 +76,8 @@
       "expected": "401",
       "actual": "HTTP 401 UNAUTHORIZED",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::c69ns-1793936470599-7671cb93c22b",
-      "at": "2026-11-06T03:41:10.363Z"
+      "requestId": "icn1::iad1::25jxv-1793936641806-9ae2df689d91",
+      "at": "2026-11-06T03:44:01.559Z"
     },
     {
       "stage": "8",
@@ -86,8 +86,8 @@
       "expected": "401 또는 403",
       "actual": "HTTP 401 UNAUTHORIZED",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::c69ns-1793936470847-867791505491",
-      "at": "2026-11-06T03:41:10.578Z"
+      "requestId": "icn1::iad1::25jxv-1793936642036-972506d9b9cc",
+      "at": "2026-11-06T03:44:01.779Z"
     },
     {
       "stage": "8",
@@ -96,8 +96,8 @@
       "expected": "401 또는 403",
       "actual": "HTTP 401 UNAUTHORIZED",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::c69ns-1793936471062-8460bcb269e8",
-      "at": "2026-11-06T03:41:10.800Z"
+      "requestId": "icn1::iad1::dvvrw-1793936642256-e730d195aa35",
+      "at": "2026-11-06T03:44:01.999Z"
     },
     {
       "stage": "10",
@@ -106,8 +106,8 @@
       "expected": "401",
       "actual": "HTTP 401 UNAUTHORIZED",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::c69ns-1793936471285-e91818d94b6c",
-      "at": "2026-11-06T03:41:11.073Z"
+      "requestId": "icn1::iad1::dvvrw-1793936642475-ab6434212fc3",
+      "at": "2026-11-06T03:44:02.215Z"
     },
     {
       "stage": "11",
@@ -116,8 +116,8 @@
       "expected": "200",
       "actual": "HTTP 200",
       "verdict": "기대와 같음",
-      "requestId": "icn1::c69ns-1793936471561-d54481c4efc9",
-      "at": "2026-11-06T03:41:11.094Z"
+      "requestId": "icn1::dvvrw-1793936642695-bcbb134934a3",
+      "at": "2026-11-06T03:44:02.239Z"
     },
     {
       "stage": "11",
@@ -126,8 +126,8 @@
       "expected": "401",
       "actual": "HTTP 401 UNAUTHORIZED",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::c69ns-1793936471578-484d19736eae",
-      "at": "2026-11-06T03:41:11.307Z"
+      "requestId": "icn1::iad1::dvvrw-1793936642716-ffb3224ffe04",
+      "at": "2026-11-06T03:44:02.471Z"
     },
     {
       "stage": "11",
@@ -136,8 +136,8 @@
       "expected": "401",
       "actual": "HTTP 401 UNAUTHORIZED",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::c69ns-1793936471792-b4d3da78e3c3",
-      "at": "2026-11-06T03:41:11.527Z"
+      "requestId": "icn1::iad1::8xx8x-1793936642949-692f15a5f808",
+      "at": "2026-11-06T03:44:02.691Z"
     },
     {
       "stage": "12",
@@ -146,8 +146,8 @@
       "expected": "401",
       "actual": "HTTP 401 UNAUTHORIZED",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::c69ns-1793936472011-cb46958bc1e1",
-      "at": "2026-11-06T03:41:11.757Z"
+      "requestId": "icn1::iad1::8xx8x-1793936643166-3e52fc72bc57",
+      "at": "2026-11-06T03:44:02.906Z"
     },
     {
       "stage": "3·4",
@@ -156,8 +156,8 @@
       "expected": "200 (본문은 기록 안 함)",
       "actual": "HTTP 200",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::c69ns-1793936472241-0d494fe71ba7",
-      "at": "2026-11-06T03:41:12.719Z"
+      "requestId": "icn1::iad1::8xx8x-1793936643382-d59791a7f366",
+      "at": "2026-11-06T03:44:03.790Z"
     },
     {
       "stage": "11",
@@ -166,8 +166,8 @@
       "expected": "200",
       "actual": "HTTP 200",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::c69ns-1793936473204-2520963eb30c",
-      "at": "2026-11-06T03:41:12.940Z"
+      "requestId": "icn1::iad1::8xx8x-1793936644267-f2310f64b18a",
+      "at": "2026-11-06T03:44:04.092Z"
     },
     {
       "stage": "11",
@@ -176,8 +176,8 @@
       "expected": "403 DEVICE_NOT_APPROVED",
       "actual": "HTTP 403 DEVICE_NOT_APPROVED",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::rvx8c-1793936473464-d9beece5d582",
-      "at": "2026-11-06T03:41:13.197Z"
+      "requestId": "icn1::iad1::wmxjs-1793936644572-98607dd418d7",
+      "at": "2026-11-06T03:44:04.396Z"
     },
     {
       "stage": "12",
@@ -186,8 +186,8 @@
       "expected": "403 DEVICE_NOT_APPROVED",
       "actual": "HTTP 403 DEVICE_NOT_APPROVED",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::rvx8c-1793936473680-eb277ce61d1d",
-      "at": "2026-11-06T03:41:13.408Z"
+      "requestId": "icn1::iad1::mzcsl-1793936644881-a6506a9682b8",
+      "at": "2026-11-06T03:44:04.726Z"
     },
     {
       "stage": "4·8",
@@ -196,8 +196,8 @@
       "expected": "403",
       "actual": "HTTP 403 FORBIDDEN",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::rvx8c-1793936473896-01e0c9ddd15c",
-      "at": "2026-11-06T03:41:14.308Z"
+      "requestId": "icn1::iad1::mgpjt-1793936645205-f9c374b9e40b",
+      "at": "2026-11-06T03:44:05.223Z"
     },
     {
       "stage": "10",
@@ -206,8 +206,8 @@
       "expected": "403",
       "actual": "HTTP 403 FORBIDDEN",
       "verdict": "기대와 같음",
-      "requestId": "icn1::iad1::rvx8c-1793936474791-04cf436bb9ba",
-      "at": "2026-11-06T03:41:15.171Z"
+      "requestId": "icn1::iad1::sdfkx-1793936645702-08f1e9e4dd61",
+      "at": "2026-11-06T03:44:06.215Z"
     },
     {
       "stage": "4",
@@ -265,37 +265,37 @@
       "stage": "6·7·8·11",
       "cmd": "npm run decider:test",
       "result": "종료 코드 0",
-      "at": "2026-11-06T03:41:15.277Z"
+      "at": "2026-11-06T03:44:06.313Z"
     },
     {
       "stage": "7",
       "cmd": "npm run fixture:7",
       "result": "종료 코드 0",
-      "at": "2026-11-06T03:41:15.353Z"
+      "at": "2026-11-06T03:44:06.386Z"
     },
     {
       "stage": "8",
       "cmd": "npm run fixture:8",
       "result": "종료 코드 0",
-      "at": "2026-11-06T03:41:15.431Z"
+      "at": "2026-11-06T03:44:06.457Z"
     },
     {
       "stage": "11",
       "cmd": "npm run fixture:11",
       "result": "종료 코드 0",
-      "at": "2026-11-06T03:41:15.512Z"
+      "at": "2026-11-06T03:44:06.527Z"
     },
     {
       "stage": "9",
       "cmd": "npm run detect:test",
       "result": "종료 코드 0",
-      "at": "2026-11-06T03:41:15.591Z"
+      "at": "2026-11-06T03:44:06.600Z"
     },
     {
       "stage": "10",
       "cmd": "npm run policy:verify",
       "result": "종료 코드 0",
-      "at": "2026-11-06T03:41:15.666Z"
+      "at": "2026-11-06T03:44:06.665Z"
     }
   ]
 }

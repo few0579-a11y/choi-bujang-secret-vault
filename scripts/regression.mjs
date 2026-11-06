@@ -12,7 +12,8 @@ import { createInterface } from 'node:readline';
 const root = resolve(import.meta.dirname, '..');
 const config = JSON.parse(readFileSync(join(root, 'aleph.config.json'), 'utf8'));
 const app = new URL(config.publicAppUrl);
-const B_NOTE = '10b00000-0000-4000-8000-000000000001'; // 10단계 B 가상 메모(공개된 시험용 ID)
+// 10단계 복구 시험용 가상 메모. 주인은 A 계정(test-a)입니다(2026-11-06 DB에서 owner 확인).
+const B_NOTE = '10b00000-0000-4000-8000-000000000001';
 const NOTICE = '8a8a8a8a-0000-4000-8000-000000000001';
 const commit = (() => { try { return execFileSync('git', ['-C', root, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).trim(); } catch { return '알 수 없음'; } })();
 
@@ -58,16 +59,16 @@ const cases = [
   ['11', '금지', '무토큰 기기 상태 GET', '401', () => req('GET', '/api/device'), r => r.status === 401],
   ['11', '금지', '무토큰 + 본문 approved 기기 승인 POST', '401', () => req('POST', '/api/device', null, { status: 'approved', deviceId: 'aaaaaaaaaaaaaaaa' }), r => r.status === 401],
   ['12', '금지', '무토큰 작전실 GET /api/ops', '401', () => req('GET', '/api/ops'), r => r.status === 401],
-  ['3·4', '정상', 'B가 자기 가상 메모 GET /api/notes/:id', '200 (본문은 기록 안 함)', t => req('GET', `/api/notes/${B_NOTE}`, t.B), r => r.status === 200, 'B'],
+  ['3·4', '정상', 'A가 자기 가상 메모 GET /api/notes/:id', '200 (본문은 기록 안 함)', t => req('GET', `/api/notes/${B_NOTE}`, t.A), r => r.status === 200, 'A'],
   ['11', '정상', 'B 기기 상태 GET /api/device', '200', t => req('GET', '/api/device', t.B), r => r.status === 200, 'B'],
   ['11', '금지', 'B 목록 GET /api/notes (승인 기기 쿠키 없음)', '403 DEVICE_NOT_APPROVED', t => req('GET', '/api/notes', t.B), (r, j) => r.status === 403 && j?.error === 'DEVICE_NOT_APPROVED', 'B'],
   ['12', '금지', 'B 작전실 GET /api/ops (승인 기기 쿠키 없음)', '403 DEVICE_NOT_APPROVED', t => req('GET', '/api/ops', t.B), (r, j) => r.status === 403 && j?.error === 'DEVICE_NOT_APPROVED', 'B'],
-  ['4·8', '금지', 'A가 B 메모 GET /api/notes/:id', '403 not_owner', t => req('GET', `/api/notes/${B_NOTE}`, t.A), r => r.status === 403, 'A'],
-  ['10', '금지', 'A가 B 메모 복원 POST', '403 not_owner', t => req('POST', `/api/notes/${B_NOTE}/restore`, t.A, {}), r => r.status === 403, 'A'],
+  ['4·8', '금지', 'B가 A 메모 GET /api/notes/:id', '403', t => req('GET', `/api/notes/${B_NOTE}`, t.B), r => r.status === 403, 'B'],
+  ['10', '금지', 'B가 A 메모 복원 POST', '403', t => req('POST', `/api/notes/${B_NOTE}/restore`, t.B, {}), r => r.status === 403, 'B'],
 ];
 const notSent = [
   ['4', '정상', 'A·B 자기 메모 수정·삭제 PUT/DELETE', '200', '미실행 — 메모를 바꾸는 요청은 자동으로 보내지 않음'],
-  ['10', '정상', 'B 자기 메모 복원 POST', '200', '미실행 — 메모를 되돌리는 요청은 자동으로 보내지 않음'],
+  ['10', '정상', 'A 자기 메모 복원 POST', '200', '미실행 — 메모를 되돌리는 요청은 자동으로 보내지 않음(2026-11-06 첫 실행 때 주인을 잘못 가정해 1회 보냄: 결과 no_change, 내용 변화 없음)'],
   ['6·7', '금지', '미등록 기기 / 이상 접속 추가 확인', 'deny / step_up', '미실행(API) — 판정기는 반 엔진이 부름. 아래 로컬 연습만 실행'],
   ['9', '금지', '조회 폭주 → 회수 제안', 'propose_revocation', '미실행(API) — 운영 엔진 사건 전달 경로 없음. 아래 로컬 연습만 실행'],
   ['12', '금지', '심판 총공세 41종', '모두 차단', '미실행 — 이 스크립트가 보내지 않음. 심판 판정 화면만 근거'],

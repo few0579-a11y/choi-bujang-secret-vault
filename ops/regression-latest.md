@@ -1,32 +1,32 @@
 # 1~12단계 회귀 시험 표 (실측)
 
-- 대상 배포: https://choi-bujang-secret-vault-lyart.vercel.app · 검사 커밋: `37d3eed` · 실행 시각: 2026-11-06T03:41:15.667Z
+- 대상 배포: https://choi-bujang-secret-vault-lyart.vercel.app · 검사 커밋: `819fba0` · 실행 시각: 2026-11-06T03:44:06.665Z
 - 실제로 보낸 요청 20건: 기대와 같음 20 · 기대와 다름 0 · 미실행 5건
 - 결과 칸은 이번 실행에서 받은 HTTP 응답입니다. 요청 ID는 응답 헤더 `x-vercel-id`(원본 DB 요청은 `sb-request-id`)입니다.
 - 이 표는 학생 자기 점검이며 심판 판정이 아닙니다. 심판 총공세 41종은 이 표에서 실행하지 않았습니다.
 
 | 단계 | 구분 | 요청 | 기대 | 실제 결과 | 판단 | 요청 ID | 확인 시각(UTC) |
 |---|---|---|---|---|---|---|---|
-| 1 | 정상 | GET / (첫 화면) | 200 + nosniff 헤더 | HTTP 200 | 기대와 같음 | icn1::jbmhd-1793936469396-3f16b526d0ad | 2026-11-06T03:41:08.937Z |
-| 1 | 정상 | GET /aleph.json (배포 식별) | 200 | HTTP 200 | 기대와 같음 | icn1::sdfkx-1793936469432-284062d0d346 | 2026-11-06T03:41:08.976Z |
-| 1 | 금지 | GET /data.json (공개 메모 파일) | 404 또는 메모 0건 | HTTP 404 | 기대와 같음 | icn1::rvx8c-1793936469459-2d6bef4a2803 | 2026-11-06T03:41:08.994Z |
-| 5 | 금지 | 원본 Data API anon GET | 401·403·404 또는 0건 | HTTP 401 | 기대와 같음 | 01a1aef2-2dec-7fe0-968c-587ecbb6a9b2 | 2026-11-06T03:41:09.650Z |
-| 3 | 금지 | 무토큰 GET /api/notes | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::frwk7-1793936470146-ae6ccdc7c07d | 2026-11-06T03:41:09.891Z |
-| 3 | 금지 | 무토큰 POST /api/notes | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::c69ns-1793936470387-3b6aebfae266 | 2026-11-06T03:41:10.118Z |
-| 3 | 금지 | 위조 토큰 GET /api/notes/:id | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::c69ns-1793936470599-7671cb93c22b | 2026-11-06T03:41:10.363Z |
-| 8 | 금지 | 무토큰 반 공지 PUT | 401 또는 403 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::c69ns-1793936470847-867791505491 | 2026-11-06T03:41:10.578Z |
-| 8 | 금지 | 무토큰 + 본문 role=instructor 강사 경로 PUT | 401 또는 403 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::c69ns-1793936471062-8460bcb269e8 | 2026-11-06T03:41:10.800Z |
-| 10 | 금지 | 무토큰 복구 POST | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::c69ns-1793936471285-e91818d94b6c | 2026-11-06T03:41:11.073Z |
-| 11 | 정상 | GET /manifest.webmanifest | 200 | HTTP 200 | 기대와 같음 | icn1::c69ns-1793936471561-d54481c4efc9 | 2026-11-06T03:41:11.094Z |
-| 11 | 금지 | 무토큰 기기 상태 GET | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::c69ns-1793936471578-484d19736eae | 2026-11-06T03:41:11.307Z |
-| 11 | 금지 | 무토큰 + 본문 approved 기기 승인 POST | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::c69ns-1793936471792-b4d3da78e3c3 | 2026-11-06T03:41:11.527Z |
-| 12 | 금지 | 무토큰 작전실 GET /api/ops | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::c69ns-1793936472011-cb46958bc1e1 | 2026-11-06T03:41:11.757Z |
-| 3·4 | 정상 | A가 자기 가상 메모 GET /api/notes/:id | 200 (본문은 기록 안 함) | HTTP 200 | 기대와 같음 | icn1::iad1::c69ns-1793936472241-0d494fe71ba7 | 2026-11-06T03:41:12.719Z |
-| 11 | 정상 | B 기기 상태 GET /api/device | 200 | HTTP 200 | 기대와 같음 | icn1::iad1::c69ns-1793936473204-2520963eb30c | 2026-11-06T03:41:12.940Z |
-| 11 | 금지 | B 목록 GET /api/notes (승인 기기 쿠키 없음) | 403 DEVICE_NOT_APPROVED | HTTP 403 DEVICE_NOT_APPROVED | 기대와 같음 | icn1::iad1::rvx8c-1793936473464-d9beece5d582 | 2026-11-06T03:41:13.197Z |
-| 12 | 금지 | B 작전실 GET /api/ops (승인 기기 쿠키 없음) | 403 DEVICE_NOT_APPROVED | HTTP 403 DEVICE_NOT_APPROVED | 기대와 같음 | icn1::iad1::rvx8c-1793936473680-eb277ce61d1d | 2026-11-06T03:41:13.408Z |
-| 4·8 | 금지 | B가 A 메모 GET /api/notes/:id | 403 | HTTP 403 FORBIDDEN | 기대와 같음 | icn1::iad1::rvx8c-1793936473896-01e0c9ddd15c | 2026-11-06T03:41:14.308Z |
-| 10 | 금지 | B가 A 메모 복원 POST | 403 | HTTP 403 FORBIDDEN | 기대와 같음 | icn1::iad1::rvx8c-1793936474791-04cf436bb9ba | 2026-11-06T03:41:15.171Z |
+| 1 | 정상 | GET / (첫 화면) | 200 + nosniff 헤더 | HTTP 200 | 기대와 같음 | icn1::jlkcc-1793936640427-46be78e83a4e | 2026-11-06T03:44:00.329Z |
+| 1 | 정상 | GET /aleph.json (배포 식별) | 200 | HTTP 200 | 기대와 같음 | icn1::xcnzg-1793936640810-874065b27d1b | 2026-11-06T03:44:00.355Z |
+| 1 | 금지 | GET /data.json (공개 메모 파일) | 404 또는 메모 0건 | HTTP 404 | 기대와 같음 | icn1::wmxjs-1793936640831-f2958c1f555d | 2026-11-06T03:44:00.376Z |
+| 5 | 금지 | 원본 Data API anon GET | 401·403·404 또는 0건 | HTTP 401 | 기대와 같음 | 01a1aef4-cb5c-7e55-9136-beddf0ac9d91 | 2026-11-06T03:44:00.889Z |
+| 3 | 금지 | 무토큰 GET /api/notes | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::jbmhd-1793936641371-e151f4b76431 | 2026-11-06T03:44:01.114Z |
+| 3 | 금지 | 무토큰 POST /api/notes | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::jbmhd-1793936641591-9eeb8539497a | 2026-11-06T03:44:01.329Z |
+| 3 | 금지 | 위조 토큰 GET /api/notes/:id | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::25jxv-1793936641806-9ae2df689d91 | 2026-11-06T03:44:01.559Z |
+| 8 | 금지 | 무토큰 반 공지 PUT | 401 또는 403 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::25jxv-1793936642036-972506d9b9cc | 2026-11-06T03:44:01.779Z |
+| 8 | 금지 | 무토큰 + 본문 role=instructor 강사 경로 PUT | 401 또는 403 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::dvvrw-1793936642256-e730d195aa35 | 2026-11-06T03:44:01.999Z |
+| 10 | 금지 | 무토큰 복구 POST | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::dvvrw-1793936642475-ab6434212fc3 | 2026-11-06T03:44:02.215Z |
+| 11 | 정상 | GET /manifest.webmanifest | 200 | HTTP 200 | 기대와 같음 | icn1::dvvrw-1793936642695-bcbb134934a3 | 2026-11-06T03:44:02.239Z |
+| 11 | 금지 | 무토큰 기기 상태 GET | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::dvvrw-1793936642716-ffb3224ffe04 | 2026-11-06T03:44:02.471Z |
+| 11 | 금지 | 무토큰 + 본문 approved 기기 승인 POST | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::8xx8x-1793936642949-692f15a5f808 | 2026-11-06T03:44:02.691Z |
+| 12 | 금지 | 무토큰 작전실 GET /api/ops | 401 | HTTP 401 UNAUTHORIZED | 기대와 같음 | icn1::iad1::8xx8x-1793936643166-3e52fc72bc57 | 2026-11-06T03:44:02.906Z |
+| 3·4 | 정상 | A가 자기 가상 메모 GET /api/notes/:id | 200 (본문은 기록 안 함) | HTTP 200 | 기대와 같음 | icn1::iad1::8xx8x-1793936643382-d59791a7f366 | 2026-11-06T03:44:03.790Z |
+| 11 | 정상 | B 기기 상태 GET /api/device | 200 | HTTP 200 | 기대와 같음 | icn1::iad1::8xx8x-1793936644267-f2310f64b18a | 2026-11-06T03:44:04.092Z |
+| 11 | 금지 | B 목록 GET /api/notes (승인 기기 쿠키 없음) | 403 DEVICE_NOT_APPROVED | HTTP 403 DEVICE_NOT_APPROVED | 기대와 같음 | icn1::iad1::wmxjs-1793936644572-98607dd418d7 | 2026-11-06T03:44:04.396Z |
+| 12 | 금지 | B 작전실 GET /api/ops (승인 기기 쿠키 없음) | 403 DEVICE_NOT_APPROVED | HTTP 403 DEVICE_NOT_APPROVED | 기대와 같음 | icn1::iad1::mzcsl-1793936644881-a6506a9682b8 | 2026-11-06T03:44:04.726Z |
+| 4·8 | 금지 | B가 A 메모 GET /api/notes/:id | 403 | HTTP 403 FORBIDDEN | 기대와 같음 | icn1::iad1::mgpjt-1793936645205-f9c374b9e40b | 2026-11-06T03:44:05.223Z |
+| 10 | 금지 | B가 A 메모 복원 POST | 403 | HTTP 403 FORBIDDEN | 기대와 같음 | icn1::iad1::sdfkx-1793936645702-08f1e9e4dd61 | 2026-11-06T03:44:06.215Z |
 | 4 | 정상 | A·B 자기 메모 수정·삭제 PUT/DELETE | 200 | 미실행 — 메모를 바꾸는 요청은 자동으로 보내지 않음 | 미실행 | — | — |
 | 10 | 정상 | A 자기 메모 복원 POST | 200 | 미실행 — 메모를 되돌리는 요청은 자동으로 보내지 않음(2026-11-06 첫 실행 때 주인을 잘못 가정해 1회 보냄: 결과 no_change, 내용 변화 없음) | 미실행 | — | — |
 | 6·7 | 금지 | 미등록 기기 / 이상 접속 추가 확인 | deny / step_up | 미실행(API) — 판정기는 반 엔진이 부름. 아래 로컬 연습만 실행 | 미실행 | — | — |
@@ -37,9 +37,9 @@
 
 | 단계 | 명령 | 결과 | 시각(UTC) |
 |---|---|---|---|
-| 6·7·8·11 | `npm run decider:test` | 종료 코드 0 | 2026-11-06T03:41:15.277Z |
-| 7 | `npm run fixture:7` | 종료 코드 0 | 2026-11-06T03:41:15.353Z |
-| 8 | `npm run fixture:8` | 종료 코드 0 | 2026-11-06T03:41:15.431Z |
-| 11 | `npm run fixture:11` | 종료 코드 0 | 2026-11-06T03:41:15.512Z |
-| 9 | `npm run detect:test` | 종료 코드 0 | 2026-11-06T03:41:15.591Z |
-| 10 | `npm run policy:verify` | 종료 코드 0 | 2026-11-06T03:41:15.666Z |
+| 6·7·8·11 | `npm run decider:test` | 종료 코드 0 | 2026-11-06T03:44:06.313Z |
+| 7 | `npm run fixture:7` | 종료 코드 0 | 2026-11-06T03:44:06.386Z |
+| 8 | `npm run fixture:8` | 종료 코드 0 | 2026-11-06T03:44:06.457Z |
+| 11 | `npm run fixture:11` | 종료 코드 0 | 2026-11-06T03:44:06.527Z |
+| 9 | `npm run detect:test` | 종료 코드 0 | 2026-11-06T03:44:06.600Z |
+| 10 | `npm run policy:verify` | 종료 코드 0 | 2026-11-06T03:44:06.665Z |
