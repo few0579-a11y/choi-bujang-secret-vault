@@ -1,6 +1,6 @@
 // 자체 점검: 실제 배포 주소에 요청하고 결과만 기록합니다.
 export async function runAttackChecks(config) {
-  if (![4, 5, 6, 7, 8].includes(config.step)) throw new Error('현재 점검은 4~8단계 전용입니다.');
+  if (![4, 5, 6, 7, 8, 9].includes(config.step)) throw new Error('현재 점검은 4~9단계 전용입니다.');
   let app;
   try { app = new URL(config.publicAppUrl); } catch { throw new Error('실제 Vercel 배포 URL을 설정하세요.'); }
   if (app.protocol !== 'https:' || app.hostname.endsWith('.example') || app.pathname !== '/') {

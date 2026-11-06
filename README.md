@@ -1,4 +1,4 @@
-# BYTE BACK 방어전 — 1~8단계 구현 기록
+# BYTE BACK 방어전 — 1~9단계 구현 기록
 
 1~3단계의 인증·CRUD 구조에 사용자별 소유자 검사와 DB RLS 재현 자료를 추가했습니다.
 
@@ -47,6 +47,14 @@
 - **패키징 기준표:** 새 서버 함수 3개를 `package/baseline-functions.json`의 `allowedNew`에 적었습니다. `test/package-starter.test.mjs`는 목록이 코드에 고정돼 있어 계속 실패합니다(시작 틀 시험 원문은 수정하지 않음).
 - 테스트 명령: `npm.cmd run decider:test`, `npm.cmd run fixture:7`, `npm.cmd run fixture:8` (모두 가상 요청 연습이며 심판 판정이 아닙니다).
 - **미검증:** 배포에서 A/B 계정으로 다른 사람 메모 조회·수정, 강사 계정의 공지 수정 성공은 실행하지 않았습니다. 운영 `allowedReasonCodes`에 `zone_not_allowed`가 등록됐는지, 엔진이 쓰는 `service` 이름(`notes`·`notices`)이 실제와 같은지는 이 저장소에서 확인하지 못했습니다.
+
+## 9단계 조회 폭주 탐지와 회수 제안
+
+- **입력 (제작 1):** `src/detect.mjs`는 사건마다 `at`·`method`·`identity.sub` 세 값만 읽습니다. 네트워크·기기·지역 값은 만들지 않고, 메모 내용·토큰·실명은 읽거나 출력하지 않습니다. 형식이 맞지 않는 사건은 세지 않습니다.
+- **규칙 `burst_read` (제작 2):** 같은 `identity.sub`의 `GET` 시각을 정렬해 슬라이딩 창으로 셉니다. 어느 10분 구간(시작 포함, 정확히 10분 뒤는 다음 구간)이든 121건 이상이면 의심입니다. 120건 이하, 다른 사용자 합산, 10분 밖 사건은 의심이 아닙니다.
+- **응답 (제작 3):** 의심이면 `{action:"propose_revocation", reasonCode:"burst_read", subject}` 세 키만, 아니면 `{action:"observe"}`입니다. 회수 집행·기기 권한 변경은 하지 않으며 `src/decider.mjs` 응답 형식은 그대로입니다.
+- 테스트 명령: `npm.cmd run detect:test` (가상 사건 연습 6건, 심판 판정이 아닙니다). `src/attack-check.mjs`는 9단계에서도 8단계 점검을 그대로 실행합니다.
+- **미검증:** 운영 반 엔진이 검증된 사건을 `detect`에 전달하는 경로와, 회수 제안을 실제 접속 회수로 집행하는 경로는 이 저장소에서 연결·시험하지 않았습니다.
 
 ## 현재 구조
 
