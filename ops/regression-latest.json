@@ -1,0 +1,301 @@
+{
+  "schema": "aleph.regression.v1",
+  "target": "https://choi-bujang-secret-vault-lyart.vercel.app",
+  "commit": "37d3eed",
+  "summary": {
+    "sent": 20,
+    "same": 20,
+    "different": 0,
+    "notRun": 5
+  },
+  "rows": [
+    {
+      "stage": "1",
+      "kind": "정상",
+      "label": "GET / (첫 화면)",
+      "expected": "200 + nosniff 헤더",
+      "actual": "HTTP 200",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::jbmhd-1793936469396-3f16b526d0ad",
+      "at": "2026-11-06T03:41:08.937Z"
+    },
+    {
+      "stage": "1",
+      "kind": "정상",
+      "label": "GET /aleph.json (배포 식별)",
+      "expected": "200",
+      "actual": "HTTP 200",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::sdfkx-1793936469432-284062d0d346",
+      "at": "2026-11-06T03:41:08.976Z"
+    },
+    {
+      "stage": "1",
+      "kind": "금지",
+      "label": "GET /data.json (공개 메모 파일)",
+      "expected": "404 또는 메모 0건",
+      "actual": "HTTP 404",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::rvx8c-1793936469459-2d6bef4a2803",
+      "at": "2026-11-06T03:41:08.994Z"
+    },
+    {
+      "stage": "5",
+      "kind": "금지",
+      "label": "원본 Data API anon GET",
+      "expected": "401·403·404 또는 0건",
+      "actual": "HTTP 401",
+      "verdict": "기대와 같음",
+      "requestId": "01a1aef2-2dec-7fe0-968c-587ecbb6a9b2",
+      "at": "2026-11-06T03:41:09.650Z"
+    },
+    {
+      "stage": "3",
+      "kind": "금지",
+      "label": "무토큰 GET /api/notes",
+      "expected": "401",
+      "actual": "HTTP 401 UNAUTHORIZED",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::frwk7-1793936470146-ae6ccdc7c07d",
+      "at": "2026-11-06T03:41:09.891Z"
+    },
+    {
+      "stage": "3",
+      "kind": "금지",
+      "label": "무토큰 POST /api/notes",
+      "expected": "401",
+      "actual": "HTTP 401 UNAUTHORIZED",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::c69ns-1793936470387-3b6aebfae266",
+      "at": "2026-11-06T03:41:10.118Z"
+    },
+    {
+      "stage": "3",
+      "kind": "금지",
+      "label": "위조 토큰 GET /api/notes/:id",
+      "expected": "401",
+      "actual": "HTTP 401 UNAUTHORIZED",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::c69ns-1793936470599-7671cb93c22b",
+      "at": "2026-11-06T03:41:10.363Z"
+    },
+    {
+      "stage": "8",
+      "kind": "금지",
+      "label": "무토큰 반 공지 PUT",
+      "expected": "401 또는 403",
+      "actual": "HTTP 401 UNAUTHORIZED",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::c69ns-1793936470847-867791505491",
+      "at": "2026-11-06T03:41:10.578Z"
+    },
+    {
+      "stage": "8",
+      "kind": "금지",
+      "label": "무토큰 + 본문 role=instructor 강사 경로 PUT",
+      "expected": "401 또는 403",
+      "actual": "HTTP 401 UNAUTHORIZED",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::c69ns-1793936471062-8460bcb269e8",
+      "at": "2026-11-06T03:41:10.800Z"
+    },
+    {
+      "stage": "10",
+      "kind": "금지",
+      "label": "무토큰 복구 POST",
+      "expected": "401",
+      "actual": "HTTP 401 UNAUTHORIZED",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::c69ns-1793936471285-e91818d94b6c",
+      "at": "2026-11-06T03:41:11.073Z"
+    },
+    {
+      "stage": "11",
+      "kind": "정상",
+      "label": "GET /manifest.webmanifest",
+      "expected": "200",
+      "actual": "HTTP 200",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::c69ns-1793936471561-d54481c4efc9",
+      "at": "2026-11-06T03:41:11.094Z"
+    },
+    {
+      "stage": "11",
+      "kind": "금지",
+      "label": "무토큰 기기 상태 GET",
+      "expected": "401",
+      "actual": "HTTP 401 UNAUTHORIZED",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::c69ns-1793936471578-484d19736eae",
+      "at": "2026-11-06T03:41:11.307Z"
+    },
+    {
+      "stage": "11",
+      "kind": "금지",
+      "label": "무토큰 + 본문 approved 기기 승인 POST",
+      "expected": "401",
+      "actual": "HTTP 401 UNAUTHORIZED",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::c69ns-1793936471792-b4d3da78e3c3",
+      "at": "2026-11-06T03:41:11.527Z"
+    },
+    {
+      "stage": "12",
+      "kind": "금지",
+      "label": "무토큰 작전실 GET /api/ops",
+      "expected": "401",
+      "actual": "HTTP 401 UNAUTHORIZED",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::c69ns-1793936472011-cb46958bc1e1",
+      "at": "2026-11-06T03:41:11.757Z"
+    },
+    {
+      "stage": "3·4",
+      "kind": "정상",
+      "label": "A가 자기 가상 메모 GET /api/notes/:id",
+      "expected": "200 (본문은 기록 안 함)",
+      "actual": "HTTP 200",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::c69ns-1793936472241-0d494fe71ba7",
+      "at": "2026-11-06T03:41:12.719Z"
+    },
+    {
+      "stage": "11",
+      "kind": "정상",
+      "label": "B 기기 상태 GET /api/device",
+      "expected": "200",
+      "actual": "HTTP 200",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::c69ns-1793936473204-2520963eb30c",
+      "at": "2026-11-06T03:41:12.940Z"
+    },
+    {
+      "stage": "11",
+      "kind": "금지",
+      "label": "B 목록 GET /api/notes (승인 기기 쿠키 없음)",
+      "expected": "403 DEVICE_NOT_APPROVED",
+      "actual": "HTTP 403 DEVICE_NOT_APPROVED",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::rvx8c-1793936473464-d9beece5d582",
+      "at": "2026-11-06T03:41:13.197Z"
+    },
+    {
+      "stage": "12",
+      "kind": "금지",
+      "label": "B 작전실 GET /api/ops (승인 기기 쿠키 없음)",
+      "expected": "403 DEVICE_NOT_APPROVED",
+      "actual": "HTTP 403 DEVICE_NOT_APPROVED",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::rvx8c-1793936473680-eb277ce61d1d",
+      "at": "2026-11-06T03:41:13.408Z"
+    },
+    {
+      "stage": "4·8",
+      "kind": "금지",
+      "label": "B가 A 메모 GET /api/notes/:id",
+      "expected": "403",
+      "actual": "HTTP 403 FORBIDDEN",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::rvx8c-1793936473896-01e0c9ddd15c",
+      "at": "2026-11-06T03:41:14.308Z"
+    },
+    {
+      "stage": "10",
+      "kind": "금지",
+      "label": "B가 A 메모 복원 POST",
+      "expected": "403",
+      "actual": "HTTP 403 FORBIDDEN",
+      "verdict": "기대와 같음",
+      "requestId": "icn1::iad1::rvx8c-1793936474791-04cf436bb9ba",
+      "at": "2026-11-06T03:41:15.171Z"
+    },
+    {
+      "stage": "4",
+      "kind": "정상",
+      "label": "A·B 자기 메모 수정·삭제 PUT/DELETE",
+      "expected": "200",
+      "actual": "미실행 — 메모를 바꾸는 요청은 자동으로 보내지 않음",
+      "verdict": "미실행",
+      "requestId": "—",
+      "at": "—"
+    },
+    {
+      "stage": "10",
+      "kind": "정상",
+      "label": "A 자기 메모 복원 POST",
+      "expected": "200",
+      "actual": "미실행 — 메모를 되돌리는 요청은 자동으로 보내지 않음(2026-11-06 첫 실행 때 주인을 잘못 가정해 1회 보냄: 결과 no_change, 내용 변화 없음)",
+      "verdict": "미실행",
+      "requestId": "—",
+      "at": "—"
+    },
+    {
+      "stage": "6·7",
+      "kind": "금지",
+      "label": "미등록 기기 / 이상 접속 추가 확인",
+      "expected": "deny / step_up",
+      "actual": "미실행(API) — 판정기는 반 엔진이 부름. 아래 로컬 연습만 실행",
+      "verdict": "미실행",
+      "requestId": "—",
+      "at": "—"
+    },
+    {
+      "stage": "9",
+      "kind": "금지",
+      "label": "조회 폭주 → 회수 제안",
+      "expected": "propose_revocation",
+      "actual": "미실행(API) — 운영 엔진 사건 전달 경로 없음. 아래 로컬 연습만 실행",
+      "verdict": "미실행",
+      "requestId": "—",
+      "at": "—"
+    },
+    {
+      "stage": "12",
+      "kind": "금지",
+      "label": "심판 총공세 41종",
+      "expected": "모두 차단",
+      "actual": "미실행 — 이 스크립트가 보내지 않음. 심판 판정 화면만 근거",
+      "verdict": "미실행",
+      "requestId": "—",
+      "at": "—"
+    }
+  ],
+  "local": [
+    {
+      "stage": "6·7·8·11",
+      "cmd": "npm run decider:test",
+      "result": "종료 코드 0",
+      "at": "2026-11-06T03:41:15.277Z"
+    },
+    {
+      "stage": "7",
+      "cmd": "npm run fixture:7",
+      "result": "종료 코드 0",
+      "at": "2026-11-06T03:41:15.353Z"
+    },
+    {
+      "stage": "8",
+      "cmd": "npm run fixture:8",
+      "result": "종료 코드 0",
+      "at": "2026-11-06T03:41:15.431Z"
+    },
+    {
+      "stage": "11",
+      "cmd": "npm run fixture:11",
+      "result": "종료 코드 0",
+      "at": "2026-11-06T03:41:15.512Z"
+    },
+    {
+      "stage": "9",
+      "cmd": "npm run detect:test",
+      "result": "종료 코드 0",
+      "at": "2026-11-06T03:41:15.591Z"
+    },
+    {
+      "stage": "10",
+      "cmd": "npm run policy:verify",
+      "result": "종료 코드 0",
+      "at": "2026-11-06T03:41:15.666Z"
+    }
+  ]
+}
