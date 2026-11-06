@@ -154,6 +154,7 @@
 7. **코드 되돌리기**: `git status`·`git diff`로 범위를 확인한 뒤 `git restore --source <직전 저장점> -- <파일>`. `git reset --hard`는 쓰지 않습니다.
 
 ### 12단계 미실행
+- `npm run bundle` 자기 점검(`src/attack-check.mjs`)은 심판 격리 환경 규칙(공개 HTTPS에 GET·HEAD만)에 맞춰 GET만 보냅니다. 무토큰 POST·PUT 점검 4건과 무토큰 POST /api/notes는 `not_run`으로 남기며, 같은 요청은 `ops:regress`에서 학생 PC로 실측합니다(첫 제출 S12_BUNDLE_UNSUPPORTED 0점 → 수정).
 - 작전실 화면의 실제 배포 확인과 `ops:regress` 실측은 이 커밋을 push·배포한 뒤 학생이 실행합니다. 실행 전에는 `ops/` 표가 없거나 이전 결과입니다.
 - 회수된 신원·미등록 기기의 재전송 차단은 엔진(기기 서명·신원 확인)과 판정기 `device_registered`·`request_integrity` 규칙에 의존하며, 판정기 계약에 "회수됨" 값이 없어 판정기에 새 규칙을 더하지 않았습니다.
 
