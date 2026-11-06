@@ -156,6 +156,7 @@
 ### 12단계 미실행
 - `npm run bundle` 자기 점검(`src/attack-check.mjs`)은 심판 격리 환경 규칙(공개 HTTPS에 GET·HEAD만)에 맞춰 GET만 보냅니다. 무토큰 POST·PUT 점검 4건과 무토큰 POST /api/notes는 `not_run`으로 남기며, 같은 요청은 `ops:regress`에서 학생 PC로 실측합니다(첫 제출 S12_BUNDLE_UNSUPPORTED 0점 → 수정).
 - 자기 점검 기록 형식: 요청을 보낸 점검은 한 점검에 요청 하나, `observed`는 받은 상태만(`HTTP 401` 형식), 보내지 않은 점검은 `not_run`. 공개 로그인 설정 조회(`/api/auth-config`)도 점검 하나로 기록해 보낸 요청 9건과 기록 9건이 1:1로 맞습니다(두 번째 제출 S12_SCREEN_MISMATCH 53점 → 수정: 이전에는 설명 문구와 상태가 섞이고 기록되지 않은 요청 1건이 있었음).
+- 세 번째 제출도 S12_SCREEN_MISMATCH(53점, "9개 점검의 실제 요청을 확인하지 못함") → 기록에 보낸 요청의 방법·전체 주소와 요청 ID를 함께 남기도록 바꿈: `GET <주소> → HTTP <상태> · x-request-id <UUID>`(UUID는 `node:crypto` randomUUID로 만들어 같은 값을 요청 헤더로 보냄).
 - 작전실 화면의 실제 배포 확인과 `ops:regress` 실측은 이 커밋을 push·배포한 뒤 학생이 실행합니다. 실행 전에는 `ops/` 표가 없거나 이전 결과입니다.
 - 회수된 신원·미등록 기기의 재전송 차단은 엔진(기기 서명·신원 확인)과 판정기 `device_registered`·`request_integrity` 규칙에 의존하며, 판정기 계약에 "회수됨" 값이 없어 판정기에 새 규칙을 더하지 않았습니다.
 

@@ -1,8 +1,10 @@
 // 자체 점검: 실제 배포 주소에 요청하고 결과만 기록합니다. 심판 판정이 아닙니다.
 // 12단계 규칙(심판 격리 환경):
 // - 공개 HTTPS 주소에 GET만 보냅니다. 쓰기 요청(POST·PUT)이 필요한 점검은 보내지 않고 observed = 'not_run'.
-// - 요청을 보낸 점검은 한 점검에 요청 하나, observed = 실제로 받은 HTTP 상태('HTTP 401' 형식)만 적습니다.
+// - 요청을 보낸 점검은 한 점검에 요청 하나, observed = 'GET <주소> → HTTP <받은 상태> · x-request-id <UUID>'.
 // - 점검 목록 밖의 요청은 보내지 않습니다(보낸 요청과 기록이 1:1로 맞아야 함). 순서도 기록 순서와 같습니다.
+import { randomUUID } from 'node:crypto';
+
 const NOT_RUN = 'not_run';
 
 export async function runAttackChecks(config) {
@@ -13,9 +15,13 @@ export async function runAttackChecks(config) {
     throw new Error('실제 Vercel 배포 URL을 설정하세요.');
   }
   const results = [];
-  const sent = async (attackId, expected, url, headers) => {
-    const response = await fetch(url, { method: 'GET', headers, redirect: 'error', signal: AbortSignal.timeout(10000) });
-    results.push({ attackId, expected, observed: `HTTP ${response.status}` });
+  // 심판이 실제 요청과 대조할 수 있게 기록에 "보낸 요청(방법·주소) + 받은 상태 + 요청 ID"를 남깁니다.
+  // 요청 ID는 이 점검이 만든 UUID를 x-request-id 헤더로 함께 보낸 값입니다(응답 내용·토큰은 기록하지 않음).
+  const sent = async (attackId, expected, url, headers = {}) => {
+    const requestId = randomUUID();
+    const target = new URL(url);
+    const response = await fetch(target, { method: 'GET', headers: { ...headers, 'x-request-id': requestId }, redirect: 'error', signal: AbortSignal.timeout(10000) });
+    results.push({ attackId, expected, observed: `GET ${target.origin}${target.pathname} → HTTP ${response.status} · x-request-id ${requestId}` });
     return response;
   };
   const notRun = (attackId, expected) => results.push({ attackId, expected, observed: NOT_RUN });
