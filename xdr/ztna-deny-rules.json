@@ -1,8 +1,13 @@
 {
   "schema": "aleph.xdr.deny-rules.v1",
   "moduleKey": "brute-force",
+  "moduleKeys": [
+    "brute-force",
+    "web-injection"
+  ],
   "rules": [
     {
+      "moduleKey": "brute-force",
       "type": "deny",
       "match": {
         "srcip": "203.0.113.10"
@@ -16,6 +21,7 @@
       "reason": "rapid_failures_same_source"
     },
     {
+      "moduleKey": "brute-force",
       "type": "deny",
       "match": {
         "srcip": "198.51.100.20"
@@ -28,6 +34,7 @@
       "reason": "rapid_failures_same_source"
     },
     {
+      "moduleKey": "brute-force",
       "type": "deny",
       "match": {
         "srcip": "192.0.2.30"
@@ -40,6 +47,7 @@
       "reason": "rapid_failures_same_source"
     },
     {
+      "moduleKey": "brute-force",
       "type": "deny",
       "match": {
         "srcip": "203.0.113.21"
@@ -52,6 +60,7 @@
       "reason": "password_spray_many_accounts"
     },
     {
+      "moduleKey": "brute-force",
       "type": "deny",
       "match": {
         "srcip": "198.51.100.44"
@@ -64,6 +73,7 @@
       "reason": "rapid_failures_same_source"
     },
     {
+      "moduleKey": "brute-force",
       "type": "deny",
       "match": {
         "srcip": "203.0.113.15"
@@ -76,6 +86,7 @@
       "reason": "rapid_failures_same_source"
     },
     {
+      "moduleKey": "brute-force",
       "type": "deny",
       "match": {
         "srcip": "192.0.2.18"
@@ -88,6 +99,7 @@
       "reason": "rapid_failures_same_source"
     },
     {
+      "moduleKey": "brute-force",
       "type": "deny",
       "match": {
         "srcip": "198.51.100.8"
@@ -100,6 +112,7 @@
       "reason": "password_spray_many_accounts"
     },
     {
+      "moduleKey": "brute-force",
       "type": "deny",
       "match": {
         "srcip": "203.0.113.40"
@@ -110,6 +123,98 @@
         "bf-10"
       ],
       "reason": "rapid_failures_same_source"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "web-injection",
+      "match": {
+        "srcip": "203.0.113.10"
+      },
+      "startsAt": "2026-09-27T00:13:01.000Z",
+      "expiresAt": "2026-09-27T01:13:20.000Z",
+      "alertIds": [
+        "wi-01",
+        "wi-02"
+      ],
+      "reason": "sql_injection_repeated"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "web-injection",
+      "match": {
+        "srcip": "198.51.100.15"
+      },
+      "startsAt": "2026-09-27T00:16:04.000Z",
+      "expiresAt": "2026-09-27T01:16:04.000Z",
+      "alertIds": [
+        "wi-03"
+      ],
+      "reason": "path_traversal_repeated"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "web-injection",
+      "match": {
+        "srcip": "192.0.2.15"
+      },
+      "startsAt": "2026-09-27T01:02:11.000Z",
+      "expiresAt": "2026-09-27T02:02:11.000Z",
+      "alertIds": [
+        "wi-04"
+      ],
+      "reason": "sql_injection_repeated"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "web-injection",
+      "match": {
+        "srcip": "203.0.113.18"
+      },
+      "startsAt": "2026-09-27T01:18:33.000Z",
+      "expiresAt": "2026-09-27T02:18:33.000Z",
+      "alertIds": [
+        "wi-05"
+      ],
+      "reason": "sql_injection_repeated+script_injection_repeated"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "web-injection",
+      "match": {
+        "srcip": "198.51.100.18"
+      },
+      "startsAt": "2026-09-27T02:07:08.000Z",
+      "expiresAt": "2026-09-27T03:07:08.000Z",
+      "alertIds": [
+        "wi-06"
+      ],
+      "reason": "command_separator_repeated"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "web-injection",
+      "match": {
+        "srcip": "192.0.2.21"
+      },
+      "startsAt": "2026-09-27T04:04:19.000Z",
+      "expiresAt": "2026-09-27T05:04:19.000Z",
+      "alertIds": [
+        "wi-07"
+      ],
+      "reason": "path_traversal_repeated"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "web-injection",
+      "match": {
+        "srcip": "203.0.113.22"
+      },
+      "startsAt": "2026-09-27T05:26:02.000Z",
+      "expiresAt": "2026-09-27T06:26:02.000Z",
+      "alertIds": [
+        "wi-08"
+      ],
+      "reason": "sql_injection_repeated"
     }
   ]
 }

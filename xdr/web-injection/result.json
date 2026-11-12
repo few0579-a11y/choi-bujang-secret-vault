@@ -1,0 +1,167 @@
+{
+  "schema": "aleph.xdr.result.v1",
+  "moduleKey": "web-injection",
+  "decisions": [
+    {
+      "alertId": "wi-01",
+      "action": "block",
+      "confidence": 0.9,
+      "reason": "sql_injection_repeated: 같은 주소 반복 12번 · 수준 12"
+    },
+    {
+      "alertId": "wi-02",
+      "action": "block",
+      "confidence": 0.87,
+      "reason": "script_injection_repeated: 같은 주소 반복 9번 · 수준 12"
+    },
+    {
+      "alertId": "wi-03",
+      "action": "block",
+      "confidence": 0.86,
+      "reason": "path_traversal_repeated: 같은 주소 반복 8번 · 수준 11"
+    },
+    {
+      "alertId": "wi-04",
+      "action": "block",
+      "confidence": 0.96,
+      "reason": "sql_injection_repeated: 같은 주소 반복 20번 · 수준 12"
+    },
+    {
+      "alertId": "wi-05",
+      "action": "block",
+      "confidence": 0.95,
+      "reason": "sql_injection_repeated+script_injection_repeated: 같은 주소 반복 15번 · 수준 10"
+    },
+    {
+      "alertId": "wi-06",
+      "action": "block",
+      "confidence": 0.89,
+      "reason": "command_separator_repeated: 같은 주소 반복 11번 · 수준 11"
+    },
+    {
+      "alertId": "wi-07",
+      "action": "block",
+      "confidence": 0.92,
+      "reason": "path_traversal_repeated: 같은 주소 반복 14번 · 수준 12"
+    },
+    {
+      "alertId": "wi-08",
+      "action": "block",
+      "confidence": 0.88,
+      "reason": "sql_injection_repeated: 같은 주소 반복 10번 · 수준 10"
+    },
+    {
+      "alertId": "wi-09",
+      "action": "alert",
+      "confidence": 0.57,
+      "reason": "sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인"
+    },
+    {
+      "alertId": "wi-10",
+      "action": "alert",
+      "confidence": 0.56,
+      "reason": "sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인"
+    },
+    {
+      "alertId": "wi-11",
+      "action": "alert",
+      "confidence": 0.58,
+      "reason": "script_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인"
+    },
+    {
+      "alertId": "wi-12",
+      "action": "alert",
+      "confidence": 0.57,
+      "reason": "path_traversal_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인"
+    },
+    {
+      "alertId": "wi-13",
+      "action": "alert",
+      "confidence": 0.56,
+      "reason": "sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인"
+    },
+    {
+      "alertId": "wi-14",
+      "action": "alert",
+      "confidence": 0.58,
+      "reason": "sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인"
+    },
+    {
+      "alertId": "wi-15",
+      "action": "alert",
+      "confidence": 0.57,
+      "reason": "sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인"
+    },
+    {
+      "alertId": "wi-16",
+      "action": "alert",
+      "confidence": 0.59,
+      "reason": "sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인"
+    },
+    {
+      "alertId": "wi-17",
+      "action": "alert",
+      "confidence": 0.57,
+      "reason": "command_separator_repeated 약한 일치(반복 1번(기준 8번 미만)) — 사람이 확인"
+    },
+    {
+      "alertId": "wi-18",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "외부 공개 앱 악용(T1190) 경보 아님 — 정상 요청으로 기록"
+    },
+    {
+      "alertId": "wi-19",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "외부 공개 앱 악용(T1190) 경보 아님 — 정상 요청으로 기록"
+    },
+    {
+      "alertId": "wi-20",
+      "action": "record",
+      "confidence": 0.04,
+      "reason": "외부 공개 앱 악용(T1190) 경보 아님 — 정상 요청으로 기록"
+    },
+    {
+      "alertId": "wi-21",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "외부 공개 앱 악용(T1190) 경보 아님 — 정상 요청으로 기록"
+    },
+    {
+      "alertId": "wi-22",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "외부 공개 앱 악용(T1190) 경보 아님 — 정상 요청으로 기록"
+    },
+    {
+      "alertId": "wi-23",
+      "action": "record",
+      "confidence": 0.04,
+      "reason": "외부 공개 앱 악용(T1190) 경보 아님 — 정상 요청으로 기록"
+    },
+    {
+      "alertId": "wi-24",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "외부 공개 앱 악용(T1190) 경보 아님 — 정상 요청으로 기록"
+    },
+    {
+      "alertId": "wi-25",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "외부 공개 앱 악용(T1190) 경보 아님 — 정상 요청으로 기록"
+    },
+    {
+      "alertId": "wi-26",
+      "action": "record",
+      "confidence": 0.04,
+      "reason": "외부 공개 앱 악용(T1190) 경보 아님 — 정상 요청으로 기록"
+    }
+  ],
+  "counts": {
+    "block": 8,
+    "alert": 9,
+    "record": 9
+  }
+}

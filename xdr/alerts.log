@@ -17,3 +17,20 @@
 2026-09-27T13:02:16+09:00	bf-17	alert	0.66	192.0.2.52	rapid_failures_same_source 약한 일치(실패 뒤 성공): 실패 4건 · 수준 6
 2026-09-27T14:05:27+09:00	bf-18	alert	0.78	198.51.100.52	rapid_failures_same_source 약한 일치(기준 미달): 실패 8건 · 수준 8
 2026-09-27T15:12:09+09:00	bf-19	alert	0.64	203.0.113.52	rapid_failures_same_source 약한 일치(기준 미달): 실패 3건 · 수준 6
+2026-09-27T09:13:01+09:00	wi-01	block	0.9	203.0.113.10	sql_injection_repeated: 같은 주소 반복 12번 · 수준 12
+2026-09-27T09:13:20+09:00	wi-02	block	0.87	203.0.113.10	script_injection_repeated: 같은 주소 반복 9번 · 수준 12
+2026-09-27T09:16:04+09:00	wi-03	block	0.86	198.51.100.15	path_traversal_repeated: 같은 주소 반복 8번 · 수준 11
+2026-09-27T10:02:11+09:00	wi-04	block	0.96	192.0.2.15	sql_injection_repeated: 같은 주소 반복 20번 · 수준 12
+2026-09-27T10:18:33+09:00	wi-05	block	0.95	203.0.113.18	sql_injection_repeated+script_injection_repeated: 같은 주소 반복 15번 · 수준 10
+2026-09-27T11:07:08+09:00	wi-06	block	0.89	198.51.100.18	command_separator_repeated: 같은 주소 반복 11번 · 수준 11
+2026-09-27T13:04:19+09:00	wi-07	block	0.92	192.0.2.21	path_traversal_repeated: 같은 주소 반복 14번 · 수준 12
+2026-09-27T14:26:02+09:00	wi-08	block	0.88	203.0.113.22	sql_injection_repeated: 같은 주소 반복 10번 · 수준 10
+2026-09-27T09:22:14+09:00	wi-09	alert	0.57	192.0.2.40	sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인
+2026-09-27T09:36:40+09:00	wi-10	alert	0.56	198.51.100.40	sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인
+2026-09-27T10:11:06+09:00	wi-11	alert	0.58	203.0.113.41	script_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인
+2026-09-27T10:44:18+09:00	wi-12	alert	0.57	192.0.2.41	path_traversal_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인
+2026-09-27T11:20:09+09:00	wi-13	alert	0.56	198.51.100.41	sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인
+2026-09-27T12:08:27+09:00	wi-14	alert	0.58	203.0.113.42	sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인
+2026-09-27T13:15:03+09:00	wi-15	alert	0.57	192.0.2.42	sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인
+2026-09-27T14:09:50+09:00	wi-16	alert	0.59	198.51.100.42	sql_injection_repeated 약한 일치(공격 표식 아님 명시) — 사람이 확인
+2026-09-27T15:18:12+09:00	wi-17	alert	0.57	203.0.113.43	command_separator_repeated 약한 일치(반복 1번(기준 8번 미만)) — 사람이 확인

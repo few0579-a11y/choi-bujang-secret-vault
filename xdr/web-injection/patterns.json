@@ -1,0 +1,42 @@
+{
+  "schema": "aleph.xdr.patterns.v1",
+  "moduleKey": "web-injection",
+  "source": "MITRE ATT&CK T1190 Exploit Public-Facing Application — https://attack.mitre.org/techniques/T1190/",
+  "patterns": [
+    {
+      "name": "sql_injection_repeated",
+      "technique": "T1190",
+      "signal": "요청 인자 안의 SQL 구문(OR 조건, SELECT·UNION 이어 붙이기, 구문 연결)",
+      "condition": "규칙 수준 10 이상이고, 같은 주소에서 SQL 구문 표기가 섞인 요청이 8번 이상 반복됨",
+      "basis": "MITRE T1190: 공개된 웹 앱의 입력 칸에 SQL 구문을 넣어 데이터베이스를 조작하는 SQL 주입은 외부 공개 앱 악용의 대표 절차다(MOVEit CVE-2023-34362 사례)."
+    },
+    {
+      "name": "script_injection_repeated",
+      "technique": "T1190",
+      "signal": "요청 인자 안의 스크립트 태그·스크립트 삽입 표식",
+      "condition": "규칙 수준 10 이상이고, 같은 주소에서 스크립트 삽입 표식이 섞인 요청이 8번 이상 반복됨",
+      "basis": "MITRE T1190: 웹 앱 입력에 스크립트를 끼워 넣는 공격(XSS 등)은 OWASP Top 10 의 주입 항목으로 T1190 절차에 포함된다."
+    },
+    {
+      "name": "path_traversal_repeated",
+      "technique": "T1190",
+      "signal": "경로 인자 안의 거슬러 올라가기(../) 반복",
+      "condition": "규칙 수준 10 이상이고, 같은 주소에서 경로를 여러 단계 거슬러 올라가는 표기가 8번 이상 반복됨",
+      "basis": "MITRE T1190: 파일 경로 인자에 ../ 를 반복해 웹 루트 밖 파일을 읽는 경로 이탈은 공개 웹 앱 취약점 악용 방식이다."
+    },
+    {
+      "name": "command_separator_repeated",
+      "technique": "T1190",
+      "signal": "요청 인자 안의 명령 구분자(; | && 등)",
+      "condition": "규칙 수준 10 이상이고, 같은 주소에서 명령 구분자 표기가 섞인 요청이 8번 이상 반복됨",
+      "basis": "MITRE T1190: 입력값에 명령 구분자를 넣어 서버 명령을 이어 실행시키는 명령 주입은 공개 앱 악용 절차로 기록돼 있다."
+    }
+  ],
+  "minRepeats": 8,
+  "minLevel": 10,
+  "thresholds": {
+    "block": 0.85,
+    "alert": 0.5,
+    "note": "주입 표식이 같은 주소에서 8번 이상 반복되고 규칙 수준이 10 이상이면 block. T1190 경보이지만 1건뿐이거나 수업 단어·따옴표 같은 약한 표식이면 alert(사람이 봄). T1190 이 아닌 일반 조회는 record."
+  }
+}
