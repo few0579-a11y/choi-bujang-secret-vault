@@ -3,7 +3,8 @@
   "moduleKey": "brute-force",
   "moduleKeys": [
     "brute-force",
-    "web-injection"
+    "web-injection",
+    "known-cve"
   ],
   "rules": [
     {
@@ -125,8 +126,8 @@
       "reason": "rapid_failures_same_source"
     },
     {
-      "type": "deny",
       "moduleKey": "web-injection",
+      "type": "deny",
       "match": {
         "srcip": "203.0.113.10"
       },
@@ -139,8 +140,8 @@
       "reason": "sql_injection_repeated"
     },
     {
-      "type": "deny",
       "moduleKey": "web-injection",
+      "type": "deny",
       "match": {
         "srcip": "198.51.100.15"
       },
@@ -152,8 +153,8 @@
       "reason": "path_traversal_repeated"
     },
     {
-      "type": "deny",
       "moduleKey": "web-injection",
+      "type": "deny",
       "match": {
         "srcip": "192.0.2.15"
       },
@@ -165,8 +166,8 @@
       "reason": "sql_injection_repeated"
     },
     {
-      "type": "deny",
       "moduleKey": "web-injection",
+      "type": "deny",
       "match": {
         "srcip": "203.0.113.18"
       },
@@ -178,8 +179,8 @@
       "reason": "sql_injection_repeated+script_injection_repeated"
     },
     {
-      "type": "deny",
       "moduleKey": "web-injection",
+      "type": "deny",
       "match": {
         "srcip": "198.51.100.18"
       },
@@ -191,8 +192,8 @@
       "reason": "command_separator_repeated"
     },
     {
-      "type": "deny",
       "moduleKey": "web-injection",
+      "type": "deny",
       "match": {
         "srcip": "192.0.2.21"
       },
@@ -204,8 +205,8 @@
       "reason": "path_traversal_repeated"
     },
     {
-      "type": "deny",
       "moduleKey": "web-injection",
+      "type": "deny",
       "match": {
         "srcip": "203.0.113.22"
       },
@@ -215,6 +216,98 @@
         "wi-08"
       ],
       "reason": "sql_injection_repeated"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "known-cve",
+      "match": {
+        "srcip": "203.0.113.10"
+      },
+      "startsAt": "2026-09-27T00:14:02.000Z",
+      "expiresAt": "2026-09-27T01:14:18.000Z",
+      "alertIds": [
+        "kc-01",
+        "kc-02"
+      ],
+      "reason": "jndi_lookup_in_header"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "known-cve",
+      "match": {
+        "srcip": "198.51.100.16"
+      },
+      "startsAt": "2026-09-27T00:17:06.000Z",
+      "expiresAt": "2026-09-27T01:17:06.000Z",
+      "alertIds": [
+        "kc-03"
+      ],
+      "reason": "jndi_lookup_in_param"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "known-cve",
+      "match": {
+        "srcip": "192.0.2.16"
+      },
+      "startsAt": "2026-09-27T01:04:22.000Z",
+      "expiresAt": "2026-09-27T02:04:22.000Z",
+      "alertIds": [
+        "kc-04"
+      ],
+      "reason": "jndi_lookup_in_header"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "known-cve",
+      "match": {
+        "srcip": "203.0.113.24"
+      },
+      "startsAt": "2026-09-27T01:21:09.000Z",
+      "expiresAt": "2026-09-27T02:21:09.000Z",
+      "alertIds": [
+        "kc-05"
+      ],
+      "reason": "jndi_lookup_in_param+cve_scanner_probe"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "known-cve",
+      "match": {
+        "srcip": "198.51.100.24"
+      },
+      "startsAt": "2026-09-27T02:08:41.000Z",
+      "expiresAt": "2026-09-27T03:08:41.000Z",
+      "alertIds": [
+        "kc-06"
+      ],
+      "reason": "jndi_lookup_in_param"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "known-cve",
+      "match": {
+        "srcip": "192.0.2.24"
+      },
+      "startsAt": "2026-09-27T04:06:15.000Z",
+      "expiresAt": "2026-09-27T05:06:15.000Z",
+      "alertIds": [
+        "kc-07"
+      ],
+      "reason": "jndi_lookup_in_header"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "known-cve",
+      "match": {
+        "srcip": "203.0.113.31"
+      },
+      "startsAt": "2026-09-27T05:19:03.000Z",
+      "expiresAt": "2026-09-27T06:19:03.000Z",
+      "alertIds": [
+        "kc-08"
+      ],
+      "reason": "jndi_lookup_in_header+jndi_lookup_in_param"
     }
   ]
 }
