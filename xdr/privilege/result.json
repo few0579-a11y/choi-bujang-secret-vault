@@ -1,0 +1,167 @@
+{
+  "schema": "aleph.xdr.result.v1",
+  "moduleKey": "privilege",
+  "decisions": [
+    {
+      "alertId": "pv-01",
+      "action": "block",
+      "confidence": 0.86,
+      "reason": "admin_group_added: 원격·처음 보는 주소 · 수준 12"
+    },
+    {
+      "alertId": "pv-02",
+      "action": "block",
+      "confidence": 0.86,
+      "reason": "unfamiliar_admin_command: 방금 관리자가 됨 · 수준 12"
+    },
+    {
+      "alertId": "pv-03",
+      "action": "block",
+      "confidence": 0.93,
+      "reason": "unfamiliar_admin_command+off_hours_privilege_use: 원격·처음 보는 주소·시간 밖 · 수준 11"
+    },
+    {
+      "alertId": "pv-04",
+      "action": "block",
+      "confidence": 0.93,
+      "reason": "admin_group_added+unfamiliar_admin_command: 평범한 계정·방금 관리자가 됨 · 수준 12"
+    },
+    {
+      "alertId": "pv-05",
+      "action": "block",
+      "confidence": 0.89,
+      "reason": "admin_group_added: 여러 계정 한꺼번에 · 수준 10"
+    },
+    {
+      "alertId": "pv-06",
+      "action": "block",
+      "confidence": 0.9,
+      "reason": "unfamiliar_admin_command: 원격·처음 보는 주소·세션 권한 전환 · 수준 12"
+    },
+    {
+      "alertId": "pv-07",
+      "action": "block",
+      "confidence": 0.93,
+      "reason": "admin_group_added+off_hours_privilege_use: 방금 관리자가 됨·시간 밖 · 수준 11"
+    },
+    {
+      "alertId": "pv-08",
+      "action": "block",
+      "confidence": 0.86,
+      "reason": "unfamiliar_admin_command: 다른 계정 권한 · 수준 12"
+    },
+    {
+      "alertId": "pv-09",
+      "action": "block",
+      "confidence": 0.87,
+      "reason": "admin_group_added: 빠졌다가 다시 들어옴 · 수준 10"
+    },
+    {
+      "alertId": "pv-10",
+      "action": "alert",
+      "confidence": 0.56,
+      "reason": "unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "pv-11",
+      "action": "alert",
+      "confidence": 0.57,
+      "reason": "unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "pv-12",
+      "action": "alert",
+      "confidence": 0.55,
+      "reason": "unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "pv-13",
+      "action": "alert",
+      "confidence": 0.56,
+      "reason": "unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "pv-14",
+      "action": "alert",
+      "confidence": 0.58,
+      "reason": "unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "pv-15",
+      "action": "alert",
+      "confidence": 0.56,
+      "reason": "unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "pv-16",
+      "action": "alert",
+      "confidence": 0.57,
+      "reason": "unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "pv-17",
+      "action": "alert",
+      "confidence": 0.55,
+      "reason": "unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "pv-18",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "권한 상승·계정 도용(T1068·T1078) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "pv-19",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "권한 상승·계정 도용(T1068·T1078) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "pv-20",
+      "action": "record",
+      "confidence": 0.04,
+      "reason": "권한 상승·계정 도용(T1068·T1078) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "pv-21",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "권한 상승·계정 도용(T1068·T1078) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "pv-22",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "권한 상승·계정 도용(T1068·T1078) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "pv-23",
+      "action": "record",
+      "confidence": 0.04,
+      "reason": "권한 상승·계정 도용(T1068·T1078) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "pv-24",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "권한 상승·계정 도용(T1068·T1078) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "pv-25",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "권한 상승·계정 도용(T1068·T1078) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "pv-26",
+      "action": "record",
+      "confidence": 0.04,
+      "reason": "권한 상승·계정 도용(T1068·T1078) 경보 아님 — 정상 이벤트로 기록"
+    }
+  ],
+  "counts": {
+    "block": 9,
+    "alert": 8,
+    "record": 9
+  }
+}

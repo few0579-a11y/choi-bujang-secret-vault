@@ -66,3 +66,20 @@
 2026-09-27T13:19:27+09:00	ps-14	alert	0.56	203.0.113.49	startup_folder_autostart 약한 일치(한쪽 신호만 있음) — 사람이 확인
 2026-09-27T14:08:14+09:00	ps-15	alert	0.57	192.0.2.53	suspicious_scheduled_task 약한 일치(한쪽 신호만 있음) — 사람이 확인
 2026-09-27T15:16:42+09:00	ps-16	alert	0.55	198.51.100.53	unsigned_service_from_temp 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T09:15:06+09:00	pv-01	block	0.86	203.0.113.11	admin_group_added: 원격·처음 보는 주소 · 수준 12
+2026-09-27T09:15:40+09:00	pv-02	block	0.86	203.0.113.11	unfamiliar_admin_command: 방금 관리자가 됨 · 수준 12
+2026-09-27T10:03:12+09:00	pv-03	block	0.93	198.51.100.11	unfamiliar_admin_command+off_hours_privilege_use: 원격·처음 보는 주소·시간 밖 · 수준 11
+2026-09-27T10:19:08+09:00	pv-04	block	0.93	192.0.2.11	admin_group_added+unfamiliar_admin_command: 평범한 계정·방금 관리자가 됨 · 수준 12
+2026-09-27T11:06:21+09:00	pv-05	block	0.89	203.0.113.17	admin_group_added: 여러 계정 한꺼번에 · 수준 10
+2026-09-27T13:08:02+09:00	pv-06	block	0.9	198.51.100.17	unfamiliar_admin_command: 원격·처음 보는 주소·세션 권한 전환 · 수준 12
+2026-09-27T14:16:29+09:00	pv-07	block	0.93	192.0.2.17	admin_group_added+off_hours_privilege_use: 방금 관리자가 됨·시간 밖 · 수준 11
+2026-09-27T15:02:18+09:00	pv-08	block	0.86	203.0.113.27	unfamiliar_admin_command: 다른 계정 권한 · 수준 12
+2026-09-27T15:33:07+09:00	pv-09	block	0.87	198.51.100.27	admin_group_added: 빠졌다가 다시 들어옴 · 수준 10
+2026-09-27T09:26:14+09:00	pv-10	alert	0.56	192.0.2.54	unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T10:14:33+09:00	pv-11	alert	0.57	198.51.100.54	unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T10:47:09+09:00	pv-12	alert	0.55	203.0.113.54	unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T11:21:16+09:00	pv-13	alert	0.56	192.0.2.55	unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T12:06:48+09:00	pv-14	alert	0.58	198.51.100.55	unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T13:17:05+09:00	pv-15	alert	0.56	203.0.113.55	unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T14:07:22+09:00	pv-16	alert	0.57	192.0.2.56	unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T15:19:41+09:00	pv-17	alert	0.55	198.51.100.56	unfamiliar_admin_command 약한 일치(한쪽 신호만 있음) — 사람이 확인

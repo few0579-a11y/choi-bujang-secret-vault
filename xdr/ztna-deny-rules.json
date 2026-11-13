@@ -5,7 +5,8 @@
     "brute-force",
     "web-injection",
     "known-cve",
-    "persistence"
+    "persistence",
+    "privilege"
   ],
   "rules": [
     {
@@ -311,8 +312,8 @@
       "reason": "jndi_lookup_in_header+jndi_lookup_in_param"
     },
     {
-      "type": "deny",
       "moduleKey": "persistence",
+      "type": "deny",
       "match": {
         "srcip": "203.0.113.12"
       },
@@ -325,8 +326,8 @@
       "reason": "unsigned_service_from_temp"
     },
     {
-      "type": "deny",
       "moduleKey": "persistence",
+      "type": "deny",
       "match": {
         "srcip": "198.51.100.12"
       },
@@ -338,8 +339,8 @@
       "reason": "startup_folder_autostart"
     },
     {
-      "type": "deny",
       "moduleKey": "persistence",
+      "type": "deny",
       "match": {
         "srcip": "192.0.2.12"
       },
@@ -351,8 +352,8 @@
       "reason": "unsigned_service_from_temp"
     },
     {
-      "type": "deny",
       "moduleKey": "persistence",
+      "type": "deny",
       "match": {
         "srcip": "203.0.113.19"
       },
@@ -364,8 +365,8 @@
       "reason": "suspicious_scheduled_task"
     },
     {
-      "type": "deny",
       "moduleKey": "persistence",
+      "type": "deny",
       "match": {
         "srcip": "198.51.100.19"
       },
@@ -377,8 +378,8 @@
       "reason": "unsigned_service_from_temp"
     },
     {
-      "type": "deny",
       "moduleKey": "persistence",
+      "type": "deny",
       "match": {
         "srcip": "192.0.2.19"
       },
@@ -390,8 +391,8 @@
       "reason": "suspicious_scheduled_task+startup_folder_autostart"
     },
     {
-      "type": "deny",
       "moduleKey": "persistence",
+      "type": "deny",
       "match": {
         "srcip": "203.0.113.33"
       },
@@ -401,6 +402,111 @@
         "ps-08"
       ],
       "reason": "unsigned_service_from_temp"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "privilege",
+      "match": {
+        "srcip": "203.0.113.11"
+      },
+      "startsAt": "2026-09-27T00:15:06.000Z",
+      "expiresAt": "2026-09-27T01:15:40.000Z",
+      "alertIds": [
+        "pv-01",
+        "pv-02"
+      ],
+      "reason": "admin_group_added"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "privilege",
+      "match": {
+        "srcip": "198.51.100.11"
+      },
+      "startsAt": "2026-09-27T01:03:12.000Z",
+      "expiresAt": "2026-09-27T02:03:12.000Z",
+      "alertIds": [
+        "pv-03"
+      ],
+      "reason": "unfamiliar_admin_command+off_hours_privilege_use"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "privilege",
+      "match": {
+        "srcip": "192.0.2.11"
+      },
+      "startsAt": "2026-09-27T01:19:08.000Z",
+      "expiresAt": "2026-09-27T02:19:08.000Z",
+      "alertIds": [
+        "pv-04"
+      ],
+      "reason": "admin_group_added+unfamiliar_admin_command"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "privilege",
+      "match": {
+        "srcip": "203.0.113.17"
+      },
+      "startsAt": "2026-09-27T02:06:21.000Z",
+      "expiresAt": "2026-09-27T03:06:21.000Z",
+      "alertIds": [
+        "pv-05"
+      ],
+      "reason": "admin_group_added"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "privilege",
+      "match": {
+        "srcip": "198.51.100.17"
+      },
+      "startsAt": "2026-09-27T04:08:02.000Z",
+      "expiresAt": "2026-09-27T05:08:02.000Z",
+      "alertIds": [
+        "pv-06"
+      ],
+      "reason": "unfamiliar_admin_command"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "privilege",
+      "match": {
+        "srcip": "192.0.2.17"
+      },
+      "startsAt": "2026-09-27T05:16:29.000Z",
+      "expiresAt": "2026-09-27T06:16:29.000Z",
+      "alertIds": [
+        "pv-07"
+      ],
+      "reason": "admin_group_added+off_hours_privilege_use"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "privilege",
+      "match": {
+        "srcip": "203.0.113.27"
+      },
+      "startsAt": "2026-09-27T06:02:18.000Z",
+      "expiresAt": "2026-09-27T07:02:18.000Z",
+      "alertIds": [
+        "pv-08"
+      ],
+      "reason": "unfamiliar_admin_command"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "privilege",
+      "match": {
+        "srcip": "198.51.100.27"
+      },
+      "startsAt": "2026-09-27T06:33:07.000Z",
+      "expiresAt": "2026-09-27T07:33:07.000Z",
+      "alertIds": [
+        "pv-09"
+      ],
+      "reason": "admin_group_added"
     }
   ]
 }

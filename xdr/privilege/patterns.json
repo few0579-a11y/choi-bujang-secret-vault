@@ -1,0 +1,34 @@
+{
+  "schema": "aleph.xdr.patterns.v1",
+  "moduleKey": "privilege",
+  "source": "MITRE ATT&CK T1068 Exploitation for Privilege Escalation — https://attack.mitre.org/techniques/T1068/ · T1078 Valid Accounts — https://attack.mitre.org/techniques/T1078/ · T1098.007 Additional Local or Domain Groups — https://attack.mitre.org/techniques/T1098/007/",
+  "patterns": [
+    {
+      "name": "admin_group_added",
+      "technique": "T1078.003",
+      "signal": "평범한 계정이 관리자 그룹(administrators)에 갑자기 추가됨",
+      "condition": "규칙 수준 10 이상이고, 관리자 그룹 추가가 있으며 원격·처음 보는 주소, 평범한 계정, 여러 계정 한꺼번에, 빠졌다가 곧바로 다시 들어옴, 곧바로 관리자 명령 실행 가운데 하나 이상이 함께 있음",
+      "basis": "MITRE T1078.003(Local Accounts)·T1098.007: 공격자는 손에 넣은 평범한 계정을 관리자 그룹에 넣어 정상 계정처럼 보이며 높은 권한을 얻는다."
+    },
+    {
+      "name": "unfamiliar_admin_command",
+      "technique": "T1068",
+      "signal": "처음 보는 주소·방금 관리자가 된 계정·다른 계정 권한으로 실행된 관리자 명령, 또는 세션이 갑자기 관리자 권한으로 바뀜",
+      "condition": "규칙 수준 10 이상이고, 관리자 명령 실행·권한 전환이 있으며 처음 보는 주소, 방금 관리자가 됨, 다른 계정 권한 가운데 하나 이상이 함께 있음",
+      "basis": "MITRE T1068: 권한 상승 취약점이나 탈취한 토큰을 악용하면 평소 쓰지 않던 계정·주소에서 관리자 명령이 갑자기 실행된다."
+    },
+    {
+      "name": "off_hours_privilege_use",
+      "technique": "T1078",
+      "signal": "업무·수업 시간 밖에 관리자 권한을 쓰거나 관리자 그룹을 바꿈",
+      "condition": "규칙 수준 10 이상이고, 관리자 권한 사용·그룹 변경이 업무·수업 시간 밖에 일어남",
+      "basis": "MITRE T1078: 도용된 정상 계정은 주인이 쓰지 않는 시간대에 쓰이는 경우가 많아, 시간 밖 권한 사용은 계정 도용의 대표 신호다."
+    }
+  ],
+  "minLevel": 10,
+  "thresholds": {
+    "block": 0.85,
+    "alert": 0.5,
+    "note": "관리자 그룹 추가·관리자 명령에 수상한 맥락(처음 보는 주소·시간 밖·평범한 계정·다른 계정 권한)이 겹치고 수준 10 이상이면 block. 수업 중 권한 창 취소, 관리자 아닌 그룹, 평소 주소의 명령 1건, 실패, 변경 없음은 alert(사람이 봄). 로그인·조회 같은 일반 이벤트는 record."
+  }
+}
