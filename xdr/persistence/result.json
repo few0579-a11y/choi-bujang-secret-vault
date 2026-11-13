@@ -1,0 +1,155 @@
+{
+  "schema": "aleph.xdr.result.v1",
+  "moduleKey": "persistence",
+  "decisions": [
+    {
+      "alertId": "ps-01",
+      "action": "block",
+      "confidence": 0.9,
+      "reason": "unsigned_service_from_temp: 서명 없음·임시 폴더 · 수준 12"
+    },
+    {
+      "alertId": "ps-02",
+      "action": "block",
+      "confidence": 0.94,
+      "reason": "suspicious_scheduled_task: 임시 폴더·처음 봄·시간 밖 실행 · 수준 12"
+    },
+    {
+      "alertId": "ps-03",
+      "action": "block",
+      "confidence": 0.86,
+      "reason": "startup_folder_autostart: 처음 봄 · 수준 11"
+    },
+    {
+      "alertId": "ps-04",
+      "action": "block",
+      "confidence": 0.92,
+      "reason": "unsigned_service_from_temp: 서명 없음·원격 연속 등록 · 수준 12"
+    },
+    {
+      "alertId": "ps-05",
+      "action": "block",
+      "confidence": 0.9,
+      "reason": "suspicious_scheduled_task: 임시 폴더·처음 봄 · 수준 10"
+    },
+    {
+      "alertId": "ps-06",
+      "action": "block",
+      "confidence": 0.94,
+      "reason": "unsigned_service_from_temp: 서명 없음·임시 폴더·실행 파일 바뀜 · 수준 12"
+    },
+    {
+      "alertId": "ps-07",
+      "action": "block",
+      "confidence": 0.93,
+      "reason": "suspicious_scheduled_task+startup_folder_autostart: 임시 폴더·여러 기법이 같은 파일 · 수준 11"
+    },
+    {
+      "alertId": "ps-08",
+      "action": "block",
+      "confidence": 0.94,
+      "reason": "unsigned_service_from_temp: 임시 폴더·처음 봄·재부팅 뒤 유지 · 수준 12"
+    },
+    {
+      "alertId": "ps-09",
+      "action": "alert",
+      "confidence": 0.56,
+      "reason": "suspicious_scheduled_task 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "ps-10",
+      "action": "alert",
+      "confidence": 0.57,
+      "reason": "startup_folder_autostart 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "ps-11",
+      "action": "alert",
+      "confidence": 0.55,
+      "reason": "unsigned_service_from_temp 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "ps-12",
+      "action": "alert",
+      "confidence": 0.56,
+      "reason": "suspicious_scheduled_task 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "ps-13",
+      "action": "alert",
+      "confidence": 0.61,
+      "reason": "unsigned_service_from_temp 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "ps-14",
+      "action": "alert",
+      "confidence": 0.56,
+      "reason": "startup_folder_autostart 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "ps-15",
+      "action": "alert",
+      "confidence": 0.57,
+      "reason": "suspicious_scheduled_task 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "ps-16",
+      "action": "alert",
+      "confidence": 0.55,
+      "reason": "unsigned_service_from_temp 약한 일치(한쪽 신호만 있음) — 사람이 확인"
+    },
+    {
+      "alertId": "ps-17",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "지속 기법(T1543·T1053·T1547) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ps-18",
+      "action": "record",
+      "confidence": 0.12,
+      "reason": "기존·평소 운영 항목(서명됨·평소 시각) — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ps-19",
+      "action": "record",
+      "confidence": 0.13,
+      "reason": "기존·평소 운영 항목(서명됨·평소 시각) — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ps-20",
+      "action": "record",
+      "confidence": 0.04,
+      "reason": "지속 기법(T1543·T1053·T1547) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ps-21",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "지속 기법(T1543·T1053·T1547) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ps-22",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "지속 기법(T1543·T1053·T1547) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ps-23",
+      "action": "record",
+      "confidence": 0.12,
+      "reason": "기존·평소 운영 항목(서명됨·평소 시각) — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ps-24",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "지속 기법(T1543·T1053·T1547) 경보 아님 — 정상 이벤트로 기록"
+    }
+  ],
+  "counts": {
+    "block": 8,
+    "alert": 8,
+    "record": 8
+  }
+}

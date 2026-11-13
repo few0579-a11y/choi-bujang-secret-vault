@@ -4,7 +4,8 @@
   "moduleKeys": [
     "brute-force",
     "web-injection",
-    "known-cve"
+    "known-cve",
+    "persistence"
   ],
   "rules": [
     {
@@ -218,8 +219,8 @@
       "reason": "sql_injection_repeated"
     },
     {
-      "type": "deny",
       "moduleKey": "known-cve",
+      "type": "deny",
       "match": {
         "srcip": "203.0.113.10"
       },
@@ -232,8 +233,8 @@
       "reason": "jndi_lookup_in_header"
     },
     {
-      "type": "deny",
       "moduleKey": "known-cve",
+      "type": "deny",
       "match": {
         "srcip": "198.51.100.16"
       },
@@ -245,8 +246,8 @@
       "reason": "jndi_lookup_in_param"
     },
     {
-      "type": "deny",
       "moduleKey": "known-cve",
+      "type": "deny",
       "match": {
         "srcip": "192.0.2.16"
       },
@@ -258,8 +259,8 @@
       "reason": "jndi_lookup_in_header"
     },
     {
-      "type": "deny",
       "moduleKey": "known-cve",
+      "type": "deny",
       "match": {
         "srcip": "203.0.113.24"
       },
@@ -271,8 +272,8 @@
       "reason": "jndi_lookup_in_param+cve_scanner_probe"
     },
     {
-      "type": "deny",
       "moduleKey": "known-cve",
+      "type": "deny",
       "match": {
         "srcip": "198.51.100.24"
       },
@@ -284,8 +285,8 @@
       "reason": "jndi_lookup_in_param"
     },
     {
-      "type": "deny",
       "moduleKey": "known-cve",
+      "type": "deny",
       "match": {
         "srcip": "192.0.2.24"
       },
@@ -297,8 +298,8 @@
       "reason": "jndi_lookup_in_header"
     },
     {
-      "type": "deny",
       "moduleKey": "known-cve",
+      "type": "deny",
       "match": {
         "srcip": "203.0.113.31"
       },
@@ -308,6 +309,98 @@
         "kc-08"
       ],
       "reason": "jndi_lookup_in_header+jndi_lookup_in_param"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "persistence",
+      "match": {
+        "srcip": "203.0.113.12"
+      },
+      "startsAt": "2026-09-27T00:18:04.000Z",
+      "expiresAt": "2026-09-27T01:19:12.000Z",
+      "alertIds": [
+        "ps-01",
+        "ps-02"
+      ],
+      "reason": "unsigned_service_from_temp"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "persistence",
+      "match": {
+        "srcip": "198.51.100.12"
+      },
+      "startsAt": "2026-09-27T01:06:28.000Z",
+      "expiresAt": "2026-09-27T02:06:28.000Z",
+      "alertIds": [
+        "ps-03"
+      ],
+      "reason": "startup_folder_autostart"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "persistence",
+      "match": {
+        "srcip": "192.0.2.12"
+      },
+      "startsAt": "2026-09-27T01:22:03.000Z",
+      "expiresAt": "2026-09-27T02:22:03.000Z",
+      "alertIds": [
+        "ps-04"
+      ],
+      "reason": "unsigned_service_from_temp"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "persistence",
+      "match": {
+        "srcip": "203.0.113.19"
+      },
+      "startsAt": "2026-09-27T02:09:17.000Z",
+      "expiresAt": "2026-09-27T03:09:17.000Z",
+      "alertIds": [
+        "ps-05"
+      ],
+      "reason": "suspicious_scheduled_task"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "persistence",
+      "match": {
+        "srcip": "198.51.100.19"
+      },
+      "startsAt": "2026-09-27T04:07:45.000Z",
+      "expiresAt": "2026-09-27T05:07:45.000Z",
+      "alertIds": [
+        "ps-06"
+      ],
+      "reason": "unsigned_service_from_temp"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "persistence",
+      "match": {
+        "srcip": "192.0.2.19"
+      },
+      "startsAt": "2026-09-27T05:14:08.000Z",
+      "expiresAt": "2026-09-27T06:14:08.000Z",
+      "alertIds": [
+        "ps-07"
+      ],
+      "reason": "suspicious_scheduled_task+startup_folder_autostart"
+    },
+    {
+      "type": "deny",
+      "moduleKey": "persistence",
+      "match": {
+        "srcip": "203.0.113.33"
+      },
+      "startsAt": "2026-09-27T06:28:31.000Z",
+      "expiresAt": "2026-09-27T07:28:31.000Z",
+      "alertIds": [
+        "ps-08"
+      ],
+      "reason": "unsigned_service_from_temp"
     }
   ]
 }

@@ -50,3 +50,19 @@
 2026-09-27T12:09:04+09:00	kc-14	alert	0.61	203.0.113.46	jndi_lookup_in_param 약한 일치(완전한 원격 조회 구문 없음) — 사람이 확인
 2026-09-27T13:22:13+09:00	kc-15	alert	0.6	192.0.2.47	jndi_lookup_in_param 약한 일치(완전한 원격 조회 구문 없음) — 사람이 확인
 2026-09-27T14:11:36+09:00	kc-16	alert	0.63	198.51.100.47	jndi_lookup_in_param 약한 일치(완전한 원격 조회 구문 없음) — 사람이 확인
+2026-09-27T09:18:04+09:00	ps-01	block	0.9	203.0.113.12	unsigned_service_from_temp: 서명 없음·임시 폴더 · 수준 12
+2026-09-27T09:19:12+09:00	ps-02	block	0.94	203.0.113.12	suspicious_scheduled_task: 임시 폴더·처음 봄·시간 밖 실행 · 수준 12
+2026-09-27T10:06:28+09:00	ps-03	block	0.86	198.51.100.12	startup_folder_autostart: 처음 봄 · 수준 11
+2026-09-27T10:22:03+09:00	ps-04	block	0.92	192.0.2.12	unsigned_service_from_temp: 서명 없음·원격 연속 등록 · 수준 12
+2026-09-27T11:09:17+09:00	ps-05	block	0.9	203.0.113.19	suspicious_scheduled_task: 임시 폴더·처음 봄 · 수준 10
+2026-09-27T13:07:45+09:00	ps-06	block	0.94	198.51.100.19	unsigned_service_from_temp: 서명 없음·임시 폴더·실행 파일 바뀜 · 수준 12
+2026-09-27T14:14:08+09:00	ps-07	block	0.93	192.0.2.19	suspicious_scheduled_task+startup_folder_autostart: 임시 폴더·여러 기법이 같은 파일 · 수준 11
+2026-09-27T15:28:31+09:00	ps-08	block	0.94	203.0.113.33	unsigned_service_from_temp: 임시 폴더·처음 봄·재부팅 뒤 유지 · 수준 12
+2026-09-27T09:27:16+09:00	ps-09	alert	0.56	192.0.2.48	suspicious_scheduled_task 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T10:15:22+09:00	ps-10	alert	0.57	198.51.100.48	startup_folder_autostart 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T10:49:05+09:00	ps-11	alert	0.55	203.0.113.48	unsigned_service_from_temp 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T11:23:38+09:00	ps-12	alert	0.56	192.0.2.49	suspicious_scheduled_task 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T12:11:09+09:00	ps-13	alert	0.61	198.51.100.49	unsigned_service_from_temp 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T13:19:27+09:00	ps-14	alert	0.56	203.0.113.49	startup_folder_autostart 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T14:08:14+09:00	ps-15	alert	0.57	192.0.2.53	suspicious_scheduled_task 약한 일치(한쪽 신호만 있음) — 사람이 확인
+2026-09-27T15:16:42+09:00	ps-16	alert	0.55	198.51.100.53	unsigned_service_from_temp 약한 일치(한쪽 신호만 있음) — 사람이 확인

@@ -1,0 +1,34 @@
+{
+  "schema": "aleph.xdr.patterns.v1",
+  "moduleKey": "persistence",
+  "source": "MITRE ATT&CK T1543 Create or Modify System Process — https://attack.mitre.org/techniques/T1543/ · T1053 Scheduled Task/Job — https://attack.mitre.org/techniques/T1053/ · T1547 Boot or Logon Autostart Execution — https://attack.mitre.org/techniques/T1547/",
+  "patterns": [
+    {
+      "name": "unsigned_service_from_temp",
+      "technique": "T1543.003",
+      "signal": "새로 만들거나 바뀐 서비스가 서명 없는 실행 파일·임시 폴더(Temp) 실행 파일을 가리킴",
+      "condition": "규칙 수준 10 이상이고, 서비스 등록·변경이 있으며 서명 없음·임시 폴더 경로·평소 목록에 없음 가운데 하나 이상이 함께 있음",
+      "basis": "MITRE T1543.003(Windows Service): 공격자는 다시 켜도 자기 프로그램이 돌도록 서비스를 만들거나 기존 서비스의 실행 파일을 바꾼다."
+    },
+    {
+      "name": "suspicious_scheduled_task",
+      "technique": "T1053.005",
+      "signal": "처음 보는 예약 작업이 임시 폴더 프로그램을 실행하거나, 작업 이름이 임의 문자열이거나, 평소 시간 밖에 실행됨",
+      "condition": "규칙 수준 10 이상이고, 예약 작업 등록이 있으며 임시 폴더 경로·임의 이름·처음 봄·시간 밖 실행 가운데 하나 이상이 함께 있음",
+      "basis": "MITRE T1053.005(Scheduled Task): 예약 작업으로 악성 프로그램을 주기적으로·재부팅 뒤에도 실행해 지속성을 얻는 것은 흔한 지속 기법이다."
+    },
+    {
+      "name": "startup_folder_autostart",
+      "technique": "T1547.001",
+      "signal": "시작 폴더·시작 프로그램에 평소 목록에 없는 실행 파일이 추가됨",
+      "condition": "규칙 수준 10 이상이고, 시작 폴더·시작 프로그램 변경이 있으며 평소 목록에 없음·임시 폴더 경로·다른 지속 기법과 같은 파일 가운데 하나 이상이 함께 있음",
+      "basis": "MITRE T1547.001(Registry Run Keys / Startup Folder): 로그인할 때 자동 실행되는 시작 폴더에 프로그램을 넣으면 사용자가 켤 때마다 다시 실행된다."
+    }
+  ],
+  "minLevel": 10,
+  "thresholds": {
+    "block": 0.85,
+    "alert": 0.5,
+    "note": "지속 기법(서비스·예약 작업·시작 폴더)에 수상한 신호(서명 없음·임시 폴더·처음 봄·임의 이름)가 겹치고 수준 10 이상이면 block. 수업 도구·서명 미확인·등록 없음처럼 한쪽만 있으면 alert(사람이 봄). 기존·평소·서명된 항목과 지속 기법이 아닌 이벤트는 record."
+  }
+}
