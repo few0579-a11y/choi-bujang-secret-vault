@@ -1,0 +1,35 @@
+{
+  "schema": "aleph.xdr.patterns.v1",
+  "moduleKey": "exfiltration",
+  "source": "MITRE ATT&CK T1041 Exfiltration Over C2 Channel — https://attack.mitre.org/techniques/T1041/ · T1048 Exfiltration Over Alternative Protocol — https://attack.mitre.org/techniques/T1048/ · T1560 Archive Collected Data — https://attack.mitre.org/techniques/T1560/",
+  "patterns": [
+    {
+      "name": "bulk_transfer_new_destination",
+      "technique": "T1048",
+      "signal": "처음 보는(또는 외부) 목적지로 대용량·다량 파일 전송, 같은 목적지로 반복 전송, 평소 쓰지 않던 포트",
+      "condition": "규칙 수준 10 이상이고, 전송량 50MB 이상(또는 파일 50개 이상·반복 5번 이상)이며 처음 보는 목적지·외부 주소·반복·평소 쓰지 않던 포트 가운데 하나 이상이 함께 있음",
+      "basis": "MITRE T1048: 공격자는 평소 쓰지 않는 프로토콜·포트로 처음 보는 바깥 주소에 많은 자료를 한꺼번에 내보내 유출한다."
+    },
+    {
+      "name": "off_hours_archive_exfil",
+      "technique": "T1560",
+      "signal": "업무·수업 시간 밖, 또는 연속으로 압축 파일이 처음 보는 주소로 나감",
+      "condition": "규칙 수준 10 이상이고, 압축 파일 반출이 있으며 시간 밖·처음 보는 주소·여러 목적지·연속 업로드 가운데 하나 이상이 함께 있고 전송량이 50MB 이상임",
+      "basis": "MITRE T1560(Archive Collected Data)+T1048: 빼낼 자료를 압축해 묶은 뒤 사람이 없는 시간에 한 번에 내보내는 것은 유출 직전·직후의 전형적 흔적이다."
+    },
+    {
+      "name": "c2_channel_exfil",
+      "technique": "T1041",
+      "signal": "명령 통로(C2)로 큰 파일이 처음 보는 목적지에 반복 전송됨",
+      "condition": "규칙 수준 10 이상이고, 명령 통로 전송이 있으며 큰 파일(50MB 이상)·반복이 함께 있음",
+      "basis": "MITRE T1041: 이미 심어 둔 원격 조종 통로로 자료를 함께 실어 보내면 따로 연결을 열지 않아도 자료가 빠져나간다."
+    }
+  ],
+  "minLevel": 10,
+  "minBytes": 50000000,
+  "thresholds": {
+    "block": 0.85,
+    "alert": 0.5,
+    "note": "처음 보는·외부 목적지로 50MB 이상 또는 다량·반복 전송이고 수준 10 이상이면 block. 작은 파일·1건·평소 목적지·수업 자료 주소·실패·외부 전송 없음은 alert(사람이 봄). 일반 읽기·저장·평소 목적지의 작은 동기화는 record."
+  }
+}

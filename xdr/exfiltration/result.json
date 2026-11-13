@@ -1,0 +1,191 @@
+{
+  "schema": "aleph.xdr.result.v1",
+  "moduleKey": "exfiltration",
+  "decisions": [
+    {
+      "alertId": "ex-01",
+      "action": "block",
+      "confidence": 0.94,
+      "reason": "bulk_transfer_new_destination: 240MB · 파일 200개 · 처음 보는 목적지·다량 파일·짧은 시간 · 수준 12"
+    },
+    {
+      "alertId": "ex-02",
+      "action": "block",
+      "confidence": 0.93,
+      "reason": "bulk_transfer_new_destination+off_hours_archive_exfil: 180MB · 파일 1개 · 처음 보는 목적지·시간 밖 · 수준 12"
+    },
+    {
+      "alertId": "ex-03",
+      "action": "block",
+      "confidence": 0.87,
+      "reason": "bulk_transfer_new_destination: 90MB · 파일 ?개 · 반복 전송 · 수준 11"
+    },
+    {
+      "alertId": "ex-04",
+      "action": "block",
+      "confidence": 0.93,
+      "reason": "bulk_transfer_new_destination: 120MB · 파일 60개 · 반복 전송·평소 안 쓰는 포트·다량 파일 · 수준 12"
+    },
+    {
+      "alertId": "ex-05",
+      "action": "block",
+      "confidence": 0.9,
+      "reason": "bulk_transfer_new_destination: 70MB · 파일 140개 · 처음 보는 목적지·다량 파일 · 수준 10"
+    },
+    {
+      "alertId": "ex-06",
+      "action": "block",
+      "confidence": 0.91,
+      "reason": "bulk_transfer_new_destination: 210MB · 파일 ?개 · 시간 밖·반복 전송 · 수준 12"
+    },
+    {
+      "alertId": "ex-07",
+      "action": "block",
+      "confidence": 0.93,
+      "reason": "bulk_transfer_new_destination+off_hours_archive_exfil: 150MB · 파일 3개 · 처음 보는 목적지·반복 전송 · 수준 11"
+    },
+    {
+      "alertId": "ex-08",
+      "action": "block",
+      "confidence": 0.95,
+      "reason": "bulk_transfer_new_destination: 320MB · 파일 400개 · 처음 보는 목적지·다량 파일·짧은 시간 · 수준 12"
+    },
+    {
+      "alertId": "ex-09",
+      "action": "block",
+      "confidence": 0.92,
+      "reason": "bulk_transfer_new_destination+c2_channel_exfil: 80MB · 파일 ?개 · 처음 보는 목적지·반복 전송 · 수준 10"
+    },
+    {
+      "alertId": "ex-10",
+      "action": "block",
+      "confidence": 0.89,
+      "reason": "bulk_transfer_new_destination+off_hours_archive_exfil: 110MB · 파일 2개 · 처음 보는 목적지 · 수준 12"
+    },
+    {
+      "alertId": "ex-11",
+      "action": "alert",
+      "confidence": 0.56,
+      "reason": "bulk_transfer_new_destination 약한 일치(작은 전송 8MB) — 사람이 확인"
+    },
+    {
+      "alertId": "ex-12",
+      "action": "alert",
+      "confidence": 0.57,
+      "reason": "bulk_transfer_new_destination 약한 일치(평소 목적지·실패·일부 전송 등 약한 신호) — 사람이 확인"
+    },
+    {
+      "alertId": "ex-13",
+      "action": "alert",
+      "confidence": 0.55,
+      "reason": "bulk_transfer_new_destination 약한 일치(평소 목적지·실패·일부 전송 등 약한 신호) — 사람이 확인"
+    },
+    {
+      "alertId": "ex-14",
+      "action": "alert",
+      "confidence": 0.59,
+      "reason": "bulk_transfer_new_destination 약한 일치(작은 전송 400KB) — 사람이 확인"
+    },
+    {
+      "alertId": "ex-15",
+      "action": "alert",
+      "confidence": 0.58,
+      "reason": "bulk_transfer_new_destination 약한 일치(작은 전송 3MB) — 사람이 확인"
+    },
+    {
+      "alertId": "ex-16",
+      "action": "alert",
+      "confidence": 0.56,
+      "reason": "bulk_transfer_new_destination 약한 일치(평소 목적지·실패·일부 전송 등 약한 신호) — 사람이 확인"
+    },
+    {
+      "alertId": "ex-17",
+      "action": "alert",
+      "confidence": 0.57,
+      "reason": "bulk_transfer_new_destination 약한 일치(평소 목적지·실패·일부 전송 등 약한 신호) — 사람이 확인"
+    },
+    {
+      "alertId": "ex-18",
+      "action": "alert",
+      "confidence": 0.55,
+      "reason": "bulk_transfer_new_destination 약한 일치(평소 목적지·실패·일부 전송 등 약한 신호) — 사람이 확인"
+    },
+    {
+      "alertId": "ex-19",
+      "action": "alert",
+      "confidence": 0.56,
+      "reason": "c2_channel_exfil 약한 일치(평소 목적지·실패·일부 전송 등 약한 신호) — 사람이 확인"
+    },
+    {
+      "alertId": "ex-20",
+      "action": "alert",
+      "confidence": 0.57,
+      "reason": "bulk_transfer_new_destination 약한 일치(평소 목적지·실패·일부 전송 등 약한 신호) — 사람이 확인"
+    },
+    {
+      "alertId": "ex-21",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "유출(T1041·T1048) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ex-22",
+      "action": "record",
+      "confidence": 0.04,
+      "reason": "유출(T1041·T1048) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ex-23",
+      "action": "record",
+      "confidence": 0.13,
+      "reason": "평소 목적지의 작은 동기화 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ex-24",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "유출(T1041·T1048) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ex-25",
+      "action": "record",
+      "confidence": 0.04,
+      "reason": "유출(T1041·T1048) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ex-26",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "유출(T1041·T1048) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ex-27",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "유출(T1041·T1048) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ex-28",
+      "action": "record",
+      "confidence": 0.04,
+      "reason": "유출(T1041·T1048) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ex-29",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "유출(T1041·T1048) 경보 아님 — 정상 이벤트로 기록"
+    },
+    {
+      "alertId": "ex-30",
+      "action": "record",
+      "confidence": 0.05,
+      "reason": "유출(T1041·T1048) 경보 아님 — 정상 이벤트로 기록"
+    }
+  ],
+  "counts": {
+    "block": 10,
+    "alert": 10,
+    "record": 10
+  }
+}
